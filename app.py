@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -48,6 +47,20 @@ pred_pe = model.predict(X_new)[0]
 st.subheader("💡 Hasil Prediksi")
 st.write(f"**Prediksi Net Hourly Electrical Energy Output (PE):** `{pred_pe:.2f} MW`")
 st.write(f"**Akurasi model (R² Score):** `{r2_val:.4f}`")
+
+# 🔧 Fungsi rekomendasi berdasarkan output prediksi
+def get_ccpp_recommendation(pe):
+    if pe < 430:
+        return "⚠️ Daya rendah. Cek sistem pendingin & tekanan udara masuk. Optimasi suhu ambient."
+    elif 430 <= pe <= 470:
+        return "✅ Daya normal. Sistem berjalan efisien. Lanjutkan monitoring berkala."
+    else:
+        return "🔥 Daya tinggi. Waspada beban berlebih. Periksa turbin dan pasokan bahan bakar."
+
+# Tampilkan rekomendasi
+st.subheader("📌 Rekomendasi Operasional")
+rekomendasi = get_ccpp_recommendation(pred_pe)
+st.info(rekomendasi)
 
 # Cek apakah input pernah ada di data asli
 df_match = df[
