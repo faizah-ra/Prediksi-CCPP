@@ -42,6 +42,7 @@ feature_importance = {
 # URL gambar SHAP (beeswarm plot)
 SHAP_IMAGE_URL = "https://raw.githubusercontent.com/faizah-ra/Prediksi-CCPP/655e3c655cff9f581ba13e5fdaf27aff11b3b8e7/shap_beeswarm.png"
 
+
 # Inisialisasi session_state untuk page jika belum ada
 if "page" not in st.session_state:
     st.session_state.page = "🏠 Landing Page"
@@ -64,7 +65,8 @@ page = st.sidebar.radio("Pilih halaman:",
                         key="page")
 
 # --- Halaman 1: Landing Page ---
-if st.session_state.page == "🏠 Landing Page":
+# Halaman 1: Landing Page
+if page == "🏠 Landing Page":
     st.title("🔌 Prediksi Daya Listrik - Pembangkit Listrik Siklus Gabungan (CCPP)")
     st.markdown("""
     Aplikasi ini membantu operator memprediksi output daya CCPP secara akurat berdasarkan kondisi lingkungan:
@@ -77,8 +79,10 @@ if st.session_state.page == "🏠 Landing Page":
     """)
     st.markdown("---")
     st.write("Silakan pilih halaman di sidebar untuk melihat evaluasi model, transparansi, dan melakukan prediksi.")
+    
     if st.button("🔎 Coba Prediksi Langsung"):
-        set_page_to_prediksi()
+        st.experimental_rerun()
+
 
 # --- Halaman 4: Prediksi Daya ---
 elif st.session_state.page == "⚡ Prediksi Daya":
