@@ -1,153 +1,69 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import joblib
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import requests
 from io import BytesIO
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
-# URL file model dan dataset di GitHub (raw link)
-MODEL_URL = "https://github.com/faizah-ra/Prediksi-CCPP/raw/a969311688874181e29751c3ceb08b29fcc249e2/model_gradient_boosting.pkl"
-DATASET_URL = "https://github.com/faizah-ra/Prediksi-CCPP/raw/a969311688874181e29751c3ceb08b29fcc249e2/Folds5x2_pp.xlsx"
+# Raw URLs dari GitHub
+DATASET_URL = "https://github.com/faizah-ra/Prediksi-CCPP/raw/main/Folds5x2_pp.xlsx"
+MODEL_URL = "https://github.com/faizah-ra/Prediksi-CCPP/raw/main/model_gradient_boosting.pkl"
 
 @st.cache_resource
 def load_model_from_url(url):
     response = requests.get(url)
     response.raise_for_status()
-    model = joblib.load(BytesIO(response.content))
+    model_bytes = BytesIO(response.content)
+    model = joblib.load(model_bytes)
     return model
 
 @st.cache_data
-def load_data_from_url(url):
+def load_dataset_from_url(url):
     response = requests.get(url)
     response.raise_for_status()
-    df = pd.read_excel(BytesIO(response.content))
+    data_bytes = BytesIO(response.content)
+    df = pd.read_excel(data_bytes)
     return df
 
-model = load_model_from_url(MODEL_URL)
-df = load_data_from_url(DATASET_URL)
+def main():
+    st.title("Prediksi Energi dengan Gradient Boosting")
 
-# Split fitur dan target
-X = df[['AT', 'V', 'AP', 'RH']]
-y = df['PE']
-y_pred_all = model.predict(X)
+    # Load model dan dataset
+    model = load_model_from_url(MODEL_URL)
+    df = load_dataset_from_url(DATASET_URL)
 
-# Hitung metrik evaluasi
-r2_val = r2_score(y, y_pred_all)
-mae_val = mean_absolute_error(y, y_pred_all)
-rmse_val = mean_squared_error(y, y_pred_all, squared=False)
+    # Tampilkan dataset (opsional)
+    if st.checkbox("Tampilkan dataset"):
+        st.dataframe(df)
 
-# Konfigurasi halaman utama
-st.set_page_config(page_title="Prediksi Daya CCPP", layout="centered")
+    # Split fitur dan target
+    X = df[['AT', 'V', 'AP', 'RH']]
+    y = df['PE']
 
-# Sidebar navigasi
-st.sidebar.title("🔧 Navigasi Aplikasi")
-halaman = st.sidebar.radio("Pilih Halaman:", ["🏠 Beranda", "📈 Evaluasi Model", "🧠 Transparansi Model", "🔍 Prediksi Langsung"])
+    # Prediksi semua data untuk evaluasi model
+    y_pred_all = model.predict(X)
 
-if halaman == "🏠 Beranda":
-    st.title("🔌 Prediksi Daya Listrik - CCPP")
-    st.markdown("""
-    Aplikasi ini membantu operator memprediksi **Net Hourly Electrical Energy Output** dari Combined Cycle Power Plant (CCPP) berdasarkan kondisi lingkungan:
+    # Hitung metrik evaluasi
+    r2_val = r2_score(y, y_pred_all)
+    mae_val = mean_absolute_error(y, y_pred_all)
+    rmse_val = mean_squared_error(y, y_pred_all, squared=False)
 
-    - Ambient Temperature (AT)
-    - Exhaust Vacuum (V)
-    - Ambient Pressure (AP)
-    - Relative Humidity (RH)
+    st.subheader("Evaluasi Model pada Dataset Lengkap")
+    st.write(f"R2 Score: {r2_val:.4f}")
+    st.write(f"Mean Absolute Error (MAE): {mae_val:.4f}")
+    st.write(f"Root Mean Squared Error (RMSE): {rmse_val:.4f}")
 
-    👉 Gunakan menu di samping untuk mengeksplorasi fitur aplikasi.
-    """)
+    # Input fitur untuk prediksi manual dari user
+    st.subheader("Prediksi Energi Berdasarkan Input Manual")
+    at = st.number_input("Masukkan AT (Temperature)", value=20.0)
+    v = st.number_input("Masukkan V (Exhaust Vacuum)", value=40.0)
+    ap = st.number_input("Masukkan AP (Ambient Pressure)", value=1010.0)
+    rh = st.number_input("Masukkan RH (Relative Humidity)", value=50.0)
 
-elif halaman == "📈 Evaluasi Model":
-    st.title("📊 Evaluasi Model Prediksi")
-    st.metric("R² Score", f"{r2_val:.4f}")
-    st.metric("MAE", f"{mae_val:.2f} MW")
-    st.metric("RMSE", f"{rmse_val:.2f} MW")
+    if st.button("Prediksi"):
+        input_data = [[at, v, ap, rh]]
+        pred = model.predict(input_data)
+        st.success(f"Prediksi Energi (PE): {pred[0]:.4f}")
 
-    fig, ax = plt.subplots(figsize=(8, 4))
-    ax.scatter(y, y_pred_all, alpha=0.5, color='blue')
-    ax.plot([y.min(), y.max()], [y.min(), y.max()], 'r--')
-    ax.set_xlabel("Nilai Aktual")
-    ax.set_ylabel("Prediksi")
-    ax.set_title("Aktual vs Prediksi Output Energi")
-    st.pyplot(fig)
-
-    st.info("Model diuji menggunakan data historis dari CCPP dan menunjukkan kinerja yang baik dengan R² tinggi.")
-
-elif halaman == "🧠 Transparansi Model":
-    st.title("🔍 Transparansi Model")
-    feature_importance = model.feature_importances_
-    fitur = ['AT', 'V', 'AP', 'RH']
-    importance_df = pd.DataFrame({'Fitur': fitur, 'Importance': feature_importance})
-    importance_df = importance_df.sort_values(by='Importance', ascending=False)
-
-    fig, ax = plt.subplots()
-    sns.barplot(data=importance_df, x='Importance', y='Fitur', palette='viridis', ax=ax)
-    ax.set_title("Feature Importance Model Gradient Boosting")
-    st.pyplot(fig)
-
-    st.write("""
-    Faktor paling berpengaruh dalam model ini adalah **Ambient Temperature** dan **Exhaust Vacuum**, 
-    yang secara fisik memengaruhi performa turbin gas.
-    """)
-
-elif halaman == "🔍 Prediksi Langsung":
-    st.title("🔮 Prediksi Output Daya CCPP")
-
-    st.subheader("Masukkan Kondisi Lingkungan")
-    at = st.number_input("Ambient Temperature (AT) °C", min_value=0.0, max_value=50.0, value=25.0, step=0.1)
-    v = st.number_input("Exhaust Vacuum (V) cm Hg", min_value=20.0, max_value=100.0, value=40.0, step=0.1)
-    ap = st.number_input("Ambient Pressure (AP) mbar", min_value=900.0, max_value=1100.0, value=1013.0, step=0.1)
-    rh = st.number_input("Relative Humidity (RH) %", min_value=10.0, max_value=100.0, value=60.0, step=0.1)
-
-    if st.button("Prediksi Daya"):
-        X_new = np.array([[at, v, ap, rh]])
-        pred_pe = model.predict(X_new)[0]
-
-        st.subheader("💡 Hasil Prediksi")
-        st.write(f"**Prediksi PE:** `{pred_pe:.2f} MW`")
-        st.write(f"**R² Score Model:** `{r2_val:.4f}`")
-
-        def get_ccpp_recommendation(pe):
-            if pe < 430:
-                return "⚠️ Daya rendah. Cek sistem pendingin & tekanan udara masuk."
-            elif 430 <= pe <= 470:
-                return "✅ Daya normal. Sistem efisien."
-            else:
-                return "🔥 Daya tinggi. Waspadai beban berlebih."
-
-        st.subheader("📌 Rekomendasi Operasional")
-        st.info(get_ccpp_recommendation(pred_pe))
-
-        df_match = df[
-            (df['AT'].round(2) == round(at, 2)) &
-            (df['V'].round(2) == round(v, 2)) &
-            (df['AP'].round(2) == round(ap, 2)) &
-            (df['RH'].round(2) == round(rh, 2))
-        ]
-        if not df_match.empty:
-            actual_pe = df_match['PE'].values[0]
-            error = abs(actual_pe - pred_pe)
-            st.success(f"🎯 Nilai aktual: **{actual_pe:.2f} MW**")
-            st.info(f"Selisih prediksi: **{error:.2f} MW**")
-
-        st.subheader("Distribusi Data PE")
-        fig, ax = plt.subplots(figsize=(10, 4))
-        sns.histplot(df['PE'], bins=50, kde=True, ax=ax, color='skyblue')
-        ax.axvline(pred_pe, color='red', linestyle='--', label='Prediksi Anda')
-        ax.set_title("Distribusi Output Energi Listrik (PE)")
-        ax.set_xlabel("PE (MW)")
-        ax.legend()
-        st.pyplot(fig)
-
-    st.download_button(
-        label="⬇️ Unduh Hasil Prediksi",
-        data=pd.DataFrame({"AT": [at], "V": [v], "AP": [ap], "RH": [rh], "Prediksi_PE": [pred_pe]}).to_csv(index=False),
-        file_name="prediksi_ccpp.csv",
-        mime="text/csv"
-    )
-
-# Footer
-st.markdown("---")
-st.caption("Model Gradient Boosting dilatih menggunakan data UCI CCPP (2011–2014). Aplikasi oleh [faizah-ra](https://github.com/faizah-ra)")
+if __name__ == "__main__":
+    main()
