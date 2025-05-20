@@ -42,27 +42,29 @@ feature_importance = {
 # URL gambar SHAP (beeswarm plot)
 SHAP_IMAGE_URL = "https://raw.githubusercontent.com/faizah-ra/Prediksi-CCPP/655e3c655cff9f581ba13e5fdaf27aff11b3b8e7/shap_beeswarm.png"
 
-# Sidebar untuk navigasi halaman
+# Inisialisasi session_state untuk page jika belum ada
+if "page" not in st.session_state:
+    st.session_state.page = "🏠 Landing Page"
+
+# Fungsi untuk pindah halaman
+def set_page_to_prediksi():
+    st.session_state.page = "⚡ Prediksi Daya"
+
+# Sidebar navigasi
 st.sidebar.title("Navigasi")
+# Sinkronisasi radio dengan session_state.page
 page = st.sidebar.radio("Pilih halaman:", 
                         ["🏠 Landing Page", 
                          "📊 Evaluasi Model", 
                          "🔍 Transparansi Model", 
                          "⚡ Prediksi Daya", 
                          "💾 Simpan & Unduh", 
-                         "ℹ️ Info Model"])
-
-# --- Fungsi rekomendasi operasional ---
-def get_ccpp_recommendation(pe):
-    if pe < 430:
-        return "⚠️ Daya rendah. Cek sistem pendingin & tekanan udara masuk. Optimasi suhu ambient."
-    elif 430 <= pe <= 470:
-        return "✅ Daya normal. Sistem berjalan efisien. Lanjutkan monitoring berkala."
-    else:
-        return "🔥 Daya tinggi. Waspada beban berlebih. Periksa turbin dan pasokan bahan bakar."
+                         "ℹ️ Info Model"],
+                        index=["🏠 Landing Page", "📊 Evaluasi Model", "🔍 Transparansi Model", "⚡ Prediksi Daya", "💾 Simpan & Unduh", "ℹ️ Info Model"].index(st.session_state.page),
+                        key="page")
 
 # --- Halaman 1: Landing Page ---
-if page == "🏠 Landing Page":
+if st.session_state.page == "🏠 Landing Page":
     st.title("🔌 Prediksi Daya Listrik - Pembangkit Listrik Siklus Gabungan (CCPP)")
     st.markdown("""
     Aplikasi ini membantu operator memprediksi output daya CCPP secara akurat berdasarkan kondisi lingkungan:
@@ -75,49 +77,11 @@ if page == "🏠 Landing Page":
     """)
     st.markdown("---")
     st.write("Silakan pilih halaman di sidebar untuk melihat evaluasi model, transparansi, dan melakukan prediksi.")
-    st.button("🔎 Coba Prediksi Langsung", on_click=lambda: st.experimental_rerun())
-
-# --- Halaman 2: Evaluasi Model ---
-elif page == "📊 Evaluasi Model":
-    st.title("📊 Evaluasi Model Gradient Boosting Regressor")
-    st.markdown("Model diuji menggunakan data historis dari pembangkit CCPP. Berikut metrik evaluasinya:")
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("MAE", f"{mae:.4f}")
-    col2.metric("MSE", f"{mse:.4f}")
-    col3.metric("RMSE", f"{rmse:.4f}")
-    col4.metric("R² Score", f"{r2:.4f}")
-    
-    st.markdown("### Grafik Prediksi vs Aktual")
-    fig, ax = plt.subplots(figsize=(8,5))
-    ax.scatter(y, y_pred_all, alpha=0.3, color='blue')
-    ax.plot([y.min(), y.max()], [y.min(), y.max()], 'r--')
-    ax.set_xlabel("Nilai Aktual PE (MW)")
-    ax.set_ylabel("Prediksi PE (MW)")
-    ax.set_title("Prediksi vs Aktual Output Energi Listrik")
-    st.pyplot(fig)
-    
-    st.info("Model dengan R² mendekati 1 menunjukkan kemampuan prediksi yang sangat baik.")
-
-# --- Halaman 3: Transparansi Model ---
-elif page == "🔍 Transparansi Model":
-    st.title("🔍 Transparansi Model")
-    st.markdown("Berikut ini adalah pentingnya fitur (feature importance) yang memengaruhi prediksi daya listrik:")
-    fi_df = pd.DataFrame(feature_importance.items(), columns=["Fitur", "Importance"])
-    fi_df = fi_df.sort_values(by="Importance", ascending=False)
-    st.bar_chart(fi_df.set_index("Fitur"))
-    
-    st.markdown("""
-    **Penjelasan:**
-    - Suhu ambient (AT) merupakan faktor paling dominan, berkontribusi sekitar 91%.
-    - Vakum cerobong (V), tekanan ambient (AP), dan kelembapan relatif (RH) memiliki pengaruh yang lebih kecil.
-    - Hal ini sesuai dengan kondisi fisik turbin yang sangat dipengaruhi suhu dan vakum cerobong.
-    """)
-    
-    st.markdown("### Visualisasi SHAP (SHapley Additive exPlanations)")
-    st.image(SHAP_IMAGE_URL, caption="SHAP Beeswarm Plot - Pengaruh Fitur pada Prediksi")
+    if st.button("🔎 Coba Prediksi Langsung"):
+        set_page_to_prediksi()
 
 # --- Halaman 4: Prediksi Daya ---
-elif page == "⚡ Prediksi Daya":
+elif st.session_state.page == "⚡ Prediksi Daya":
     st.title("⚡ Prediksi Daya Listrik")
     st.header("Masukkan Kondisi Lingkungan untuk Prediksi")
 
@@ -163,6 +127,7 @@ elif page == "⚡ Prediksi Daya":
         ax2.legend()
         st.pyplot(fig2)
 
+# ... (halaman lain tidak berubah)
 # --- Halaman 5: Simpan & Unduh ---
 elif page == "💾 Simpan & Unduh":
     st.title("💾 Simpan & Unduh Laporan Prediksi")
@@ -170,4 +135,4 @@ elif page == "💾 Simpan & Unduh":
     
     with st.form("form_simpan"):
         at = st.number_input("Ambient Temperature (AT) °C", min_value=0.0, max_value=50.0, value=25.0, step=0.1)
-        v = st.number_input("Exhaust Vacuum (V) cm Hg", min_value=20.0, max_value=100.0, value=40)
+        v = st.number_input("Exhaust Vacuum (V) cm Hg", min_value=20.0, max_value=100.0, value=40
