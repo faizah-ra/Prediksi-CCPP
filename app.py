@@ -1,5 +1,3 @@
-# Streamlit App: Trust-Oriented User Flow untuk Prediksi Daya CCPP
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -7,19 +5,29 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import requests
+from io import BytesIO
 
-# Load model dan data
+# URL file model dan dataset di GitHub (raw link)
+MODEL_URL = "https://github.com/faizah-ra/Prediksi-CCPP/raw/a969311688874181e29751c3ceb08b29fcc249e2/model_gradient_boosting.pkl"
+DATASET_URL = "https://github.com/faizah-ra/Prediksi-CCPP/raw/a969311688874181e29751c3ceb08b29fcc249e2/Folds5x2_pp.xlsx"
+
 @st.cache_resource
-def load_model():
-    return joblib.load("model_gradient_boosting.pkl")
+def load_model_from_url(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    model = joblib.load(BytesIO(response.content))
+    return model
 
 @st.cache_data
-def load_data():
-    df = pd.read_excel("Folds5x2_pp.xlsx")
+def load_data_from_url(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    df = pd.read_excel(BytesIO(response.content))
     return df
 
-model = load_model()
-df = load_data()
+model = load_model_from_url(MODEL_URL)
+df = load_data_from_url(DATASET_URL)
 
 # Split fitur dan target
 X = df[['AT', 'V', 'AP', 'RH']]
