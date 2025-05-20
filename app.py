@@ -1,8 +1,4 @@
 import streamlit as st
-
-# HARUS paling atas sebelum perintah Streamlit lain
-st.set_page_config(page_title="Prediksi Daya Listrik - CCPP", layout="centered")
-
 import pandas as pd
 import numpy as np
 import joblib
@@ -33,6 +29,7 @@ y_pred_all = model.predict(X)
 r2_val = r2_score(y, y_pred_all)
 
 # UI Streamlit
+st.set_page_config(page_title="Prediksi Daya Listrik - CCPP", layout="centered")
 st.title("🔌 Prediksi Daya Listrik Pembangkit Listrik Siklus Gabungan (CCPP)")
 st.markdown("Menggunakan **Gradient Boosting Regressor** berdasarkan kondisi lingkungan.")
 
