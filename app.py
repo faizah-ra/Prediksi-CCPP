@@ -119,47 +119,49 @@ elif page == "🔍 Transparansi Model":
 # --- Halaman 4: Prediksi Daya ---
 elif page == "⚡ Prediksi Daya":
     st.title("⚡ Prediksi Daya Listrik")
-    st.sidebar.header("Input Kondisi Lingkungan")
-    at = st.sidebar.number_input("Ambient Temperature (AT) °C", min_value=0.0, max_value=50.0, value=25.0, step=0.1)
-    v = st.sidebar.number_input("Exhaust Vacuum (V) cm Hg", min_value=20.0, max_value=100.0, value=40.0, step=0.1)
-    ap = st.sidebar.number_input("Ambient Pressure (AP) mbar", min_value=900.0, max_value=1100.0, value=1013.0, step=0.1)
-    rh = st.sidebar.number_input("Relative Humidity (RH) %", min_value=10.0, max_value=100.0, value=60.0, step=0.1)
-    
-    X_new = np.array([[at, v, ap, rh]])
-    pred_pe = model.predict(X_new)[0]
-    
-    st.subheader("💡 Hasil Prediksi")
-    st.write(f"**Prediksi Net Hourly Electrical Energy Output (PE):** `{pred_pe:.2f} MW`")
-    
-    rekomendasi = get_ccpp_recommendation(pred_pe)
-    st.subheader("📌 Rekomendasi Operasional")
-    st.info(rekomendasi)
-    
-    # Cek kecocokan dengan data asli
-    df_match = df[
-        (df['AT'].round(2) == round(at, 2)) &
-        (df['V'].round(2) == round(v, 2)) &
-        (df['AP'].round(2) == round(ap, 2)) &
-        (df['RH'].round(2) == round(rh, 2))
-    ]
-    
-    if not df_match.empty:
-        actual_pe = df_match['PE'].values[0]
-        error = abs(actual_pe - pred_pe)
-        st.success(f"🎯 Nilai aktual PE dari dataset: **{actual_pe:.2f} MW**")
-        st.info(f"Selisih absolut prediksi vs aktual: **{error:.2f} MW**")
-    else:
-        st.warning("⚠️ Data input ini tidak ditemukan dalam dataset asli, nilai aktual tidak tersedia.")
-    
-    # Visualisasi distribusi PE
-    st.subheader("📊 Distribusi Output Energi Listrik (PE)")
-    fig2, ax2 = plt.subplots(figsize=(10, 4))
-    sns.histplot(df['PE'], bins=50, kde=True, ax=ax2, color='skyblue')
-    ax2.axvline(pred_pe, color='red', linestyle='--', label='Prediksi Anda')
-    ax2.set_title("Distribusi Output Energi Listrik (PE)")
-    ax2.set_xlabel("PE (MW)")
-    ax2.legend()
-    st.pyplot(fig2)
+    st.header("Masukkan Kondisi Lingkungan untuk Prediksi")
+
+    at = st.number_input("Ambient Temperature (AT) °C", min_value=0.0, max_value=50.0, value=25.0, step=0.1)
+    v = st.number_input("Exhaust Vacuum (V) cm Hg", min_value=20.0, max_value=100.0, value=40.0, step=0.1)
+    ap = st.number_input("Ambient Pressure (AP) mbar", min_value=900.0, max_value=1100.0, value=1013.0, step=0.1)
+    rh = st.number_input("Relative Humidity (RH) %", min_value=10.0, max_value=100.0, value=60.0, step=0.1)
+
+    if st.button("Prediksi"):
+        X_new = np.array([[at, v, ap, rh]])
+        pred_pe = model.predict(X_new)[0]
+        
+        st.subheader("💡 Hasil Prediksi")
+        st.write(f"**Prediksi Net Hourly Electrical Energy Output (PE):** `{pred_pe:.2f} MW`")
+        
+        rekomendasi = get_ccpp_recommendation(pred_pe)
+        st.subheader("📌 Rekomendasi Operasional")
+        st.info(rekomendasi)
+        
+        # Cek kecocokan dengan data asli
+        df_match = df[
+            (df['AT'].round(2) == round(at, 2)) &
+            (df['V'].round(2) == round(v, 2)) &
+            (df['AP'].round(2) == round(ap, 2)) &
+            (df['RH'].round(2) == round(rh, 2))
+        ]
+        
+        if not df_match.empty:
+            actual_pe = df_match['PE'].values[0]
+            error = abs(actual_pe - pred_pe)
+            st.success(f"🎯 Nilai aktual PE dari dataset: **{actual_pe:.2f} MW**")
+            st.info(f"Selisih absolut prediksi vs aktual: **{error:.2f} MW**")
+        else:
+            st.warning("⚠️ Data input ini tidak ditemukan dalam dataset asli, nilai aktual tidak tersedia.")
+        
+        # Visualisasi distribusi PE
+        st.subheader("📊 Distribusi Output Energi Listrik (PE)")
+        fig2, ax2 = plt.subplots(figsize=(10, 4))
+        sns.histplot(df['PE'], bins=50, kde=True, ax=ax2, color='skyblue')
+        ax2.axvline(pred_pe, color='red', linestyle='--', label='Prediksi Anda')
+        ax2.set_title("Distribusi Output Energi Listrik (PE)")
+        ax2.set_xlabel("PE (MW)")
+        ax2.legend()
+        st.pyplot(fig2)
 
 # --- Halaman 5: Simpan & Unduh ---
 elif page == "💾 Simpan & Unduh":
@@ -168,34 +170,4 @@ elif page == "💾 Simpan & Unduh":
     
     with st.form("form_simpan"):
         at = st.number_input("Ambient Temperature (AT) °C", min_value=0.0, max_value=50.0, value=25.0, step=0.1)
-        v = st.number_input("Exhaust Vacuum (V) cm Hg", min_value=20.0, max_value=100.0, value=40.0, step=0.1)
-        ap = st.number_input("Ambient Pressure (AP) mbar", min_value=900.0, max_value=1100.0, value=1013.0, step=0.1)
-        rh = st.number_input("Relative Humidity (RH) %", min_value=10.0, max_value=100.0, value=60.0, step=0.1)
-        submitted = st.form_submit_button("Prediksi & Simpan")
-        
-        if submitted:
-            X_new = np.array([[at, v, ap, rh]])
-            pred_pe = model.predict(X_new)[0]
-            rekomendasi = get_ccpp_recommendation(pred_pe)
-            
-            # Simpan data ke dataframe sederhana
-            data_to_save = pd.DataFrame({
-                "AT": [at],
-                "V": [v],
-                "AP": [ap],
-                "RH": [rh],
-                "Prediksi_PE": [pred_pe],
-                "Rekomendasi": [rekomendasi]
-            })
-            
-            st.success("Prediksi berhasil dilakukan dan data siap diunduh.")
-            st.write(data_to_save)
-            
-            csv = data_to_save.to_csv(index=False).encode('utf-8')
-            st.download_button("⬇️ Unduh CSV", data=csv, file_name="prediksi_ccpp.csv", mime="text/csv")
-
-# --- Halaman 6: Info Model ---
-elif page == "ℹ️ Info Model":
-    st.title("ℹ️ Informasi Model dan Pembuat")
-    st.markdown("""
-    - **Pembuat:** faizah-ra ([GitHub](https://github.com/faizah
+        v = st.number_input("Exhaust Vacuum (V) cm Hg", min_value=20.0, max_value=100.0, value=40
