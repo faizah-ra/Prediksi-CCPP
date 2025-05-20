@@ -4,55 +4,55 @@ import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
-import json
-import requests
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-# URLs data eksternal
-METRICS_URL = "https://raw.githubusercontent.com/faizah-ra/Prediksi-CCPP/655e3c655cff9f581ba13e5fdaf27aff11b3b8e7/metrics.json"
-FEATURE_IMPORTANCE_URL = "https://raw.githubusercontent.com/faizah-ra/Prediksi-CCPP/655e3c655cff9f581ba13e5fdaf27aff11b3b8e7/feature_importance.json"
-SHAP_IMAGE_URL = "https://raw.githubusercontent.com/faizah-ra/Prediksi-CCPP/655e3c655cff9f581ba13e5fdaf27aff11b3b8e7/shap_beeswarm.png"
-
-# Load model & data dengan caching
+# Load model dan data dengan cache untuk efisiensi
 @st.cache_resource
 def load_model():
     return joblib.load("model_gradient_boosting.pkl")
 
 @st.cache_data
 def load_data():
-    df = pd.read_excel("Folds5x2_pp.xlsx")
-    return df
-
-@st.cache_data
-def load_metrics():
-    response = requests.get(METRICS_URL)
-    return response.json()
-
-@st.cache_data
-def load_feature_importance():
-    response = requests.get(FEATURE_IMPORTANCE_URL)
-    return response.json()
+    return pd.read_excel("Folds5x2_pp.xlsx")
 
 model = load_model()
 df = load_data()
-metrics = load_metrics()
-feature_importance = load_feature_importance()
 
 # Split fitur dan target
 X = df[['AT', 'V', 'AP', 'RH']]
 y = df['PE']
 
-# Sidebar navigation
-st.sidebar.title("Navigasi Aplikasi")
-page = st.sidebar.radio("Pilih Halaman:", 
-                        ["🏠 Beranda", 
+# Prediksi untuk seluruh data (evaluasi)
+y_pred_all = model.predict(X)
+
+# Hitung metrik evaluasi
+mae = mean_absolute_error(y, y_pred_all)
+mse = mean_squared_error(y, y_pred_all)
+rmse = np.sqrt(mse)
+r2 = r2_score(y, y_pred_all)
+
+# Feature importance (hardcoded sesuai permintaan)
+feature_importance = {
+    "AT": 0.9105252325803225,
+    "V": 0.058625172782309824,
+    "AP": 0.017573154012486866,
+    "RH": 0.013276440624880719
+}
+
+# URL gambar SHAP (beeswarm plot)
+SHAP_IMAGE_URL = "https://raw.githubusercontent.com/faizah-ra/Prediksi-CCPP/655e3c655cff9f581ba13e5fdaf27aff11b3b8e7/shap_beeswarm.png"
+
+# Sidebar untuk navigasi halaman
+st.sidebar.title("Navigasi")
+page = st.sidebar.radio("Pilih halaman:", 
+                        ["🏠 Landing Page", 
                          "📊 Evaluasi Model", 
                          "🔍 Transparansi Model", 
-                         "⚡ Prediksi Output", 
+                         "⚡ Prediksi Daya", 
                          "💾 Simpan & Unduh", 
-                         "ℹ️ Tentang Model"])
+                         "ℹ️ Info Model"])
 
-# Fungsi rekomendasi operasional
+# --- Fungsi rekomendasi operasional ---
 def get_ccpp_recommendation(pe):
     if pe < 430:
         return "⚠️ Daya rendah. Cek sistem pendingin & tekanan udara masuk. Optimasi suhu ambient."
@@ -61,89 +61,70 @@ def get_ccpp_recommendation(pe):
     else:
         return "🔥 Daya tinggi. Waspada beban berlebih. Periksa turbin dan pasokan bahan bakar."
 
-# Halaman 1: Beranda
-if page == "🏠 Beranda":
-    st.title("🔌 Prediksi Daya Listrik CCPP")
-    st.markdown(
-        """
-        Aplikasi ini membantu operator memprediksi output daya pembangkit listrik siklus gabungan (CCPP) secara akurat berdasarkan kondisi lingkungan seperti suhu ambient, tekanan, kelembapan, dan vakum.
-        
-        **Pilih halaman di sidebar untuk:**  
-        - Lihat evaluasi model  
-        - Pelajari cara kerja model  
-        - Lakukan prediksi dengan data terbaru  
-        - Simpan dan unduh laporan hasil prediksi  
-        - Info pembuat model dan kontak  
-        """
-    )
-    st.markdown("### Mulai")
-    col1, col2 = st.columns(2)
-    if col1.button("Lihat Evaluasi Model"):
-        st.experimental_set_query_params(page="📊 Evaluasi Model")
-    if col2.button("Coba Prediksi Langsung"):
-        st.experimental_set_query_params(page="⚡ Prediksi Output")
+# --- Halaman 1: Landing Page ---
+if page == "🏠 Landing Page":
+    st.title("🔌 Prediksi Daya Listrik - Pembangkit Listrik Siklus Gabungan (CCPP)")
+    st.markdown("""
+    Aplikasi ini membantu operator memprediksi output daya CCPP secara akurat berdasarkan kondisi lingkungan:
+    - Suhu ambient (AT)
+    - Vakum cerobong (V)
+    - Tekanan ambient (AP)
+    - Kelembapan relatif (RH)
+    
+    Gunakan prediksi ini untuk memantau performa pembangkit dan mengambil tindakan operasional yang tepat.
+    """)
+    st.markdown("---")
+    st.write("Silakan pilih halaman di sidebar untuk melihat evaluasi model, transparansi, dan melakukan prediksi.")
+    st.button("🔎 Coba Prediksi Langsung", on_click=lambda: st.experimental_rerun())
 
-# Halaman 2: Evaluasi Model
+# --- Halaman 2: Evaluasi Model ---
 elif page == "📊 Evaluasi Model":
     st.title("📊 Evaluasi Model Gradient Boosting Regressor")
-    st.markdown("Model diuji menggunakan data historis selama 1 tahun.")
+    st.markdown("Model diuji menggunakan data historis dari pembangkit CCPP. Berikut metrik evaluasinya:")
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("MAE", f"{mae:.4f}")
+    col2.metric("MSE", f"{mse:.4f}")
+    col3.metric("RMSE", f"{rmse:.4f}")
+    col4.metric("R² Score", f"{r2:.4f}")
     
-    # Tampilkan metrik utama
-    st.subheader("Metrik Evaluasi")
-    st.write(f"- Mean Absolute Error (MAE): **{metrics['MAE']:.4f}**")
-    st.write(f"- Root Mean Squared Error (RMSE): **{metrics['RMSE']:.4f}**")
-    st.write(f"- Coefficient of Determination (R² Score): **{metrics['R2']:.4f}**")
-    
-    # Visualisasi Prediksi vs Aktual
-    y_pred = model.predict(X)
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.scatter(y, y_pred, alpha=0.4, color='royalblue')
+    st.markdown("### Grafik Prediksi vs Aktual")
+    fig, ax = plt.subplots(figsize=(8,5))
+    ax.scatter(y, y_pred_all, alpha=0.3, color='blue')
     ax.plot([y.min(), y.max()], [y.min(), y.max()], 'r--')
-    ax.set_xlabel("Output Aktual (PE) MW")
-    ax.set_ylabel("Output Prediksi (PE) MW")
-    ax.set_title("Perbandingan Output Aktual vs Prediksi")
+    ax.set_xlabel("Nilai Aktual PE (MW)")
+    ax.set_ylabel("Prediksi PE (MW)")
+    ax.set_title("Prediksi vs Aktual Output Energi Listrik")
     st.pyplot(fig)
     
-    st.markdown(
-        """
-        **Penjelasan:**  
-        Akurasi R² sebesar 0.96 menunjukkan model ini sangat cocok untuk prakiraan operasional.  
-        Scatter plot menunjukkan prediksi mendekati nilai aktual, membuktikan keandalan model.
-        """
-    )
+    st.info("Model dengan R² mendekati 1 menunjukkan kemampuan prediksi yang sangat baik.")
 
-# Halaman 3: Transparansi Model
+# --- Halaman 3: Transparansi Model ---
 elif page == "🔍 Transparansi Model":
-    st.title("🔍 Transparansi Model dan Feature Importance")
-    
-    # Tampilkan feature importance
-    st.subheader("Feature Importance")
-    fi_df = pd.DataFrame(feature_importance.items(), columns=["Fitur", "Pentingnya"])
-    fi_df = fi_df.sort_values(by="Pentingnya", ascending=False)
+    st.title("🔍 Transparansi Model")
+    st.markdown("Berikut ini adalah pentingnya fitur (feature importance) yang memengaruhi prediksi daya listrik:")
+    fi_df = pd.DataFrame(feature_importance.items(), columns=["Fitur", "Importance"])
+    fi_df = fi_df.sort_values(by="Importance", ascending=False)
     st.bar_chart(fi_df.set_index("Fitur"))
     
-    # Tampilkan SHAP image
-    st.subheader("Visualisasi SHAP (SHapley Additive exPlanations)")
-    st.image(SHAP_IMAGE_URL, caption="SHAP Beeswarm Plot - Pengaruh Fitur terhadap Prediksi", use_column_width=True)
+    st.markdown("""
+    **Penjelasan:**
+    - Suhu ambient (AT) merupakan faktor paling dominan, berkontribusi sekitar 91%.
+    - Vakum cerobong (V), tekanan ambient (AP), dan kelembapan relatif (RH) memiliki pengaruh yang lebih kecil.
+    - Hal ini sesuai dengan kondisi fisik turbin yang sangat dipengaruhi suhu dan vakum cerobong.
+    """)
     
-    st.markdown(
-        """
-        **Penjelasan:**  
-        Suhu ambient (AT) dan vakum cerobong (V) adalah faktor utama yang memengaruhi keluaran daya listrik (PE).  
-        Hal ini sesuai dengan kondisi fisik pembangkit dan turbin yang dipantau secara real-time.
-        """
-    )
+    st.markdown("### Visualisasi SHAP (SHapley Additive exPlanations)")
+    st.image(SHAP_IMAGE_URL, caption="SHAP Beeswarm Plot - Pengaruh Fitur pada Prediksi")
 
-# Halaman 4: Prediksi Output
-elif page == "⚡ Prediksi Output":
-    st.title("⚡ Prediksi Output Daya Listrik")
+# --- Halaman 4: Prediksi Daya ---
+elif page == "⚡ Prediksi Daya":
+    st.title("⚡ Prediksi Daya Listrik")
     st.sidebar.header("Input Kondisi Lingkungan")
-    at = st.sidebar.number_input("Ambient Temperature (AT) °C", 0.0, 50.0, 25.0, 0.1)
-    v = st.sidebar.number_input("Exhaust Vacuum (V) cm Hg", 20.0, 100.0, 40.0, 0.1)
-    ap = st.sidebar.number_input("Ambient Pressure (AP) mbar", 900.0, 1100.0, 1013.0, 0.1)
-    rh = st.sidebar.number_input("Relative Humidity (RH) %", 10.0, 100.0, 60.0, 0.1)
+    at = st.sidebar.number_input("Ambient Temperature (AT) °C", min_value=0.0, max_value=50.0, value=25.0, step=0.1)
+    v = st.sidebar.number_input("Exhaust Vacuum (V) cm Hg", min_value=20.0, max_value=100.0, value=40.0, step=0.1)
+    ap = st.sidebar.number_input("Ambient Pressure (AP) mbar", min_value=900.0, max_value=1100.0, value=1013.0, step=0.1)
+    rh = st.sidebar.number_input("Relative Humidity (RH) %", min_value=10.0, max_value=100.0, value=60.0, step=0.1)
     
-    # Prediksi
     X_new = np.array([[at, v, ap, rh]])
     pred_pe = model.predict(X_new)[0]
     
@@ -154,13 +135,14 @@ elif page == "⚡ Prediksi Output":
     st.subheader("📌 Rekomendasi Operasional")
     st.info(rekomendasi)
     
-    # Cek data aktual dari dataset asli (jika ada)
+    # Cek kecocokan dengan data asli
     df_match = df[
         (df['AT'].round(2) == round(at, 2)) &
         (df['V'].round(2) == round(v, 2)) &
         (df['AP'].round(2) == round(ap, 2)) &
         (df['RH'].round(2) == round(rh, 2))
     ]
+    
     if not df_match.empty:
         actual_pe = df_match['PE'].values[0]
         error = abs(actual_pe - pred_pe)
@@ -169,53 +151,51 @@ elif page == "⚡ Prediksi Output":
     else:
         st.warning("⚠️ Data input ini tidak ditemukan dalam dataset asli, nilai aktual tidak tersedia.")
     
-    # Visualisasi distribusi PE dan prediksi
-    st.subheader("📊 Visualisasi Data PE")
-    fig, ax = plt.subplots(figsize=(10, 4))
-    sns.histplot(df['PE'], bins=50, kde=True, ax=ax, color='skyblue')
-    ax.axvline(pred_pe, color='red', linestyle='--', label='Prediksi Anda')
-    ax.set_title("Distribusi Output Energi Listrik (PE)")
-    ax.set_xlabel("PE (MW)")
-    ax.legend()
-    st.pyplot(fig)
+    # Visualisasi distribusi PE
+    st.subheader("📊 Distribusi Output Energi Listrik (PE)")
+    fig2, ax2 = plt.subplots(figsize=(10, 4))
+    sns.histplot(df['PE'], bins=50, kde=True, ax=ax2, color='skyblue')
+    ax2.axvline(pred_pe, color='red', linestyle='--', label='Prediksi Anda')
+    ax2.set_title("Distribusi Output Energi Listrik (PE)")
+    ax2.set_xlabel("PE (MW)")
+    ax2.legend()
+    st.pyplot(fig2)
 
-# Halaman 5: Simpan & Unduh
+# --- Halaman 5: Simpan & Unduh ---
 elif page == "💾 Simpan & Unduh":
-    st.title("💾 Simpan dan Unduh Laporan Prediksi")
-    st.markdown("Fitur ini memungkinkan Anda menyimpan dan mengunduh hasil prediksi untuk pelaporan dan tracking.")
+    st.title("💾 Simpan & Unduh Laporan Prediksi")
+    st.markdown("Masukkan data prediksi Anda untuk disimpan dan diunduh.")
     
-    # Form input ulang untuk prediksi agar bisa simpan
-    at = st.number_input("Ambient Temperature (AT) °C", 0.0, 50.0, 25.0, 0.1)
-    v = st.number_input("Exhaust Vacuum (V) cm Hg", 20.0, 100.0, 40.0, 0.1)
-    ap = st.number_input("Ambient Pressure (AP) mbar", 900.0, 1100.0, 1013.0, 0.1)
-    rh = st.number_input("Relative Humidity (RH) %", 10.0, 100.0, 60.0, 0.1)
-    
-    X_new = np.array([[at, v, ap, rh]])
-    pred_pe = model.predict(X_new)[0]
-    
-    # Buat dataframe hasil prediksi
-    pred_df = pd.DataFrame({
-        "AT": [at],
-        "V": [v],
-        "AP": [ap],
-        "RH": [rh],
-        "Prediksi_PE_MW": [pred_pe]
-    })
-    
-    st.write(pred_df)
-    
-    # Simpan ke csv dan unduh
-    csv = pred_df.to_csv(index=False).encode('utf-8')
-    st.download_button("⬇️ Unduh Laporan CSV", csv, "laporan_prediksi.csv", "text/csv")
-    
-    # Simulasi kirim email (placeholder)
-    if st.button("📧 Kirim ke Email Operator"):
-        st.success("Email laporan berhasil dikirim ke operator (simulasi).")
+    with st.form("form_simpan"):
+        at = st.number_input("Ambient Temperature (AT) °C", min_value=0.0, max_value=50.0, value=25.0, step=0.1)
+        v = st.number_input("Exhaust Vacuum (V) cm Hg", min_value=20.0, max_value=100.0, value=40.0, step=0.1)
+        ap = st.number_input("Ambient Pressure (AP) mbar", min_value=900.0, max_value=1100.0, value=1013.0, step=0.1)
+        rh = st.number_input("Relative Humidity (RH) %", min_value=10.0, max_value=100.0, value=60.0, step=0.1)
+        submitted = st.form_submit_button("Prediksi & Simpan")
+        
+        if submitted:
+            X_new = np.array([[at, v, ap, rh]])
+            pred_pe = model.predict(X_new)[0]
+            rekomendasi = get_ccpp_recommendation(pred_pe)
+            
+            # Simpan data ke dataframe sederhana
+            data_to_save = pd.DataFrame({
+                "AT": [at],
+                "V": [v],
+                "AP": [ap],
+                "RH": [rh],
+                "Prediksi_PE": [pred_pe],
+                "Rekomendasi": [rekomendasi]
+            })
+            
+            st.success("Prediksi berhasil dilakukan dan data siap diunduh.")
+            st.write(data_to_save)
+            
+            csv = data_to_save.to_csv(index=False).encode('utf-8')
+            st.download_button("⬇️ Unduh CSV", data=csv, file_name="prediksi_ccpp.csv", mime="text/csv")
 
-# Halaman 6: Tentang Model
-elif page == "ℹ️ Tentang Model":
-    st.title("ℹ️ Informasi Model dan Kontak")
-    st.markdown(
-        """
-        **Pembuat Model:** Faizah Ra  
-        **Tanggal Update Terakhir:** Mei 2025
+# --- Halaman 6: Info Model ---
+elif page == "ℹ️ Info Model":
+    st.title("ℹ️ Informasi Model dan Pembuat")
+    st.markdown("""
+    - **Pembuat:** faizah-ra ([GitHub](https://github.com/faizah
