@@ -8,8 +8,7 @@ from PIL import Image
 
 # Konfigurasi halaman
 st.set_page_config(
-    page_title="Prediksi Output Daya pada Pembangkit Listrik Siklus Gabungan (CCPP) Berdasarkan Faktor Lingkungan Menggunakan Algoritma Gradient Boosting Regression Berbasis Machine Learning
-",
+    page_title="Prediksi Output Daya pada Pembangkit Listrik Siklus Gabungan (CCPP) Berdasarkan Faktor Lingkungan Menggunakan Algoritma Gradient Boosting Regression Berbasis Machine Learning",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
