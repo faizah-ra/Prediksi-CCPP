@@ -48,21 +48,51 @@ Data yang digunakan dalam proyek ini merupakan dataset dari Combined Cycle Power
 
 ### Visualisasi Distribusi Data
 ![image](https://github.com/user-attachments/assets/8098f6b2-4d89-4d24-b3bf-782280b4196e)
+Distribusi variabel numerik dalam dataset ini memberikan gambaran awal yang esensial untuk memahami karakteristik data sebelum dilakukan pemodelan lebih lanjut. Variabel AT (Ambient Temperature) menunjukkan distribusi bimodal, dengan dua puncak distribusi yang jelas. Hal ini mengindikasikan bahwa suhu lingkungan cenderung berada pada dua rentang dominan, kemungkinan dipengaruhi oleh variasi musim atau kondisi geografis tempat data dikumpulkan. Distribusi ini penting untuk diperhatikan karena dapat berdampak pada stabilitas model jika tidak ditangani dengan teknik transformasi atau segmentasi data.
 
+Pada variabel V (Exhaust Vacuum), distribusi tampak multimodal, memperlihatkan adanya beberapa puncak yang mengindikasikan keberadaan kelompok nilai yang terpisah. Hal ini bisa mencerminkan adanya pola operasional tertentu atau segmentasi beban sistem yang terjadi selama periode pengambilan data. Keberadaan distribusi seperti ini perlu dicermati karena bisa menandakan kebutuhan klasterisasi atau stratifikasi pada saat pelatihan model.
+
+Variabel AP (Ambient Pressure) memiliki bentuk distribusi yang mendekati normal (Gaussian) dengan simetri yang baik di sekitar nilai tengah. Distribusi ini menguntungkan secara statistik karena mendukung berbagai asumsi pada algoritma prediktif seperti regresi linier, dan meminimalkan kebutuhan transformasi lebih lanjut.
+
+Sementara itu, RH (Relative Humidity) memperlihatkan distribusi condong ke kiri (skewed right), dengan sebagian besar nilai berada pada kelembapan tinggi. Ini mencerminkan bahwa lingkungan pengamatan umumnya memiliki kelembapan relatif tinggi, suatu faktor yang mungkin memengaruhi efisiensi energi secara tidak langsung.
+
+Variabel target yaitu PE (Energy Output) juga menunjukkan pola bimodal, menandakan bahwa daya listrik yang dihasilkan oleh sistem pembangkit berada dalam dua kelompok utama. Ini bisa disebabkan oleh perbedaan kondisi operasional, jadwal beban, atau mode kerja sistem (seperti beban puncak vs beban normal). Distribusi ini perlu dipertimbangkan dalam pemilihan algoritma regresi dan teknik validasi karena bisa memengaruhi akurasi dan generalisasi model.
+
+Secara keseluruhan, keberagaman pola distribusi antar fitur ini menunjukkan bahwa dataset memiliki kompleksitas yang cukup tinggi. Hal ini memberikan peluang untuk eksplorasi teknik transformasi data yang tepat guna meningkatkan performa model prediktif yang akan dibangun.
+
+### Visualisasi Beberapa Boxplot dalam Grid Subplot
 ![image](https://github.com/user-attachments/assets/d91386a1-c971-483a-b2c8-6fa01499cb69)
+Distribusi variabel numerik melalui boxplot memberikan wawasan penting tentang persebaran nilai dan potensi keberadaan outlier pada setiap fitur.
+
+Variabel AT (Ambient Temperature) menunjukkan distribusi yang cukup seimbang, dengan nilai tengah (median) berada di sekitar 20°C. Rentang interkuartil (IQR) cukup lebar, mengindikasikan variasi suhu yang signifikan dalam dataset. Meskipun terdapat nilai minimum mendekati 2°C, tidak terlihat adanya outlier ekstrem, menunjukkan persebaran data yang wajar.
+
+Fitur V (Exhaust Vacuum) juga menunjukkan distribusi yang luas, dengan median mendekati 52 dan IQR yang menunjukkan variasi yang cukup besar dalam tekanan vakum. Distribusi ini bersifat simetris tanpa outlier yang signifikan, mengindikasikan kestabilan dalam variasi fitur ini.
+
+Pada fitur AP (Ambient Pressure), terdapat beberapa outlier yang cukup mencolok di bagian bawah dan atas distribusi, meskipun median berada pada sekitar 1013 mbar, mendekati tekanan atmosfer standar. Kehadiran outlier ini perlu diperhatikan karena dapat memengaruhi hasil model regresi jika tidak ditangani dengan benar.
+
+Sementara itu, RH (Relative Humidity) memiliki median yang tinggi, menunjukkan bahwa sebagian besar data berada pada tingkat kelembapan yang tinggi. Outlier ditemukan pada kelembapan rendah (sekitar 30%), yang bisa disebabkan oleh kondisi lingkungan tertentu yang tidak umum. Penyebaran data yang cukup tinggi juga menunjukkan variasi kondisi kelembapan yang signifikan.
+
+Variabel target PE (Energy Output) memiliki persebaran yang simetris dengan median sekitar 450 MW. Distribusi ini relatif stabil tanpa keberadaan outlier ekstrem, menandakan bahwa data target cukup bersih dan cocok untuk digunakan dalam pemodelan regresi. IQR yang cukup besar menunjukkan bahwa daya listrik yang dihasilkan memiliki variasi yang mencerminkan dinamika sistem pembangkit energi.
 
 ### Visualisasi Relasi Fitur 
 ![image](https://github.com/user-attachments/assets/5539935a-19a0-42d3-bbd0-6a0523970267)
+Visualisasi tersebut memperlihatkan hubungan antara beberapa variabel seperti suhu lingkungan (AT), tekanan vakum buangan (V), tekanan lingkungan (AP), kelembaban relatif (RH), dan output energi (PE). Dari pola penyebaran data, terlihat bahwa suhu lingkungan (AT) dan tekanan vakum (V) memiliki hubungan negatif yang cukup kuat terhadap output energi (PE). Artinya, semakin tinggi suhu atau vakum buangan, output energi cenderung menurun.
+
+Sementara itu, kelembaban relatif (RH) menunjukkan sedikit hubungan positif dengan output energi, meskipun tidak terlalu kuat. Tekanan lingkungan (AP) tampaknya tidak memiliki hubungan yang signifikan karena penyebaran datanya terlihat acak. Beberapa variabel seperti AT dan PE memiliki pola distribusi data yang bimodal, menunjukkan adanya dua kondisi dominan yang mungkin mewakili situasi operasi yang berbeda.
+
+Secara keseluruhan, suhu dan vakum buangan tampak menjadi faktor yang paling memengaruhi output energi. Hubungan antar fitur ini penting untuk dipahami karena dapat membantu dalam membangun model prediksi yang lebih akurat berdasarkan variabel-variabel yang relevan.
 
 ### Visualisasi Correlation Matrix
 ![image](https://github.com/user-attachments/assets/b7fba119-c105-4258-91bb-fa06240f84c6)
+Hubungan antar fitur dalam dataset ini menunjukkan adanya pola keterkaitan yang cukup jelas antara masing-masing variabel. Output energi (PE), yang menjadi target utama dalam analisis, tampak sangat dipengaruhi oleh beberapa fitur lain. Suhu lingkungan (AT) memiliki korelasi negatif yang sangat kuat terhadap PE, dengan nilai korelasi -0.95. Ini menandakan bahwa semakin tinggi suhu, maka output energi yang dihasilkan akan cenderung menurun secara signifikan. Hal ini bisa disebabkan oleh efisiensi sistem yang menurun saat suhu udara meningkat.
 
+Tekanan vakum (V) juga menunjukkan korelasi negatif yang tinggi dengan PE, yakni sebesar -0.87. Ini berarti bahwa peningkatan tekanan vakum cenderung diikuti oleh penurunan output energi. Kemungkinan ini berkaitan dengan pengaruh tekanan terhadap proses pembakaran atau konversi energi. Sementara itu, tekanan udara (AP) dan kelembaban relatif (RH) menunjukkan hubungan positif terhadap PE dengan nilai korelasi masing-masing 0.52 dan 0.39. Artinya, kenaikan tekanan udara dan kelembaban relatif cenderung diikuti oleh peningkatan output energi, meskipun hubungan ini tidak sekuat dua fitur sebelumnya.
 
+Dari sisi hubungan antar fitur selain PE, suhu lingkungan (AT) berkorelasi positif cukup tinggi dengan tekanan vakum (V), yaitu sebesar 0.84. Ini menunjukkan bahwa ketika suhu meningkat, tekanan vakum juga cenderung naik. Namun, suhu memiliki hubungan negatif terhadap tekanan udara (AP) dan kelembaban (RH), yang menunjukkan bahwa suhu tinggi biasanya disertai dengan tekanan udara yang lebih rendah dan kelembaban yang lebih rendah.
 
+Tekanan udara (AP) dan kelembaban (RH) sendiri hanya memiliki hubungan yang sangat lemah, hampir tidak berkorelasi (0.10), menunjukkan bahwa keduanya merupakan variabel yang relatif independen satu sama lain dalam konteks ini. Demikian pula, tekanan udara dan tekanan vakum memiliki korelasi negatif sedang, sebesar -0.41, menunjukkan adanya tren berlawanan antara keduanya.
 
-
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data atau exploratory data analysis.
+Secara keseluruhan, informasi ini memberikan wawasan penting tentang faktor-faktor yang memengaruhi output energi. Suhu dan tekanan vakum tampaknya menjadi indikator paling signifikan karena pengaruhnya yang kuat terhadap penurunan performa sistem, sedangkan tekanan udara dan kelembaban relatif memberikan kontribusi positif yang dapat mendukung peningkatan efisiensi dalam kondisi tertentu. Analisis ini dapat menjadi dasar dalam pengambilan keputusan atau pengembangan model prediktif yang lebih akurat.
 
 ## Data Preparation
 Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
