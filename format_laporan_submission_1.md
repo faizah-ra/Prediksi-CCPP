@@ -46,9 +46,17 @@ Data yang digunakan dalam proyek ini merupakan dataset dari Combined Cycle Power
 - RH (Relative Humidity) : Kelembapan relatif udara ambien, dalam persen (%).
 - PE (Electrical Power Output) : Output daya listrik yang dihasilkan oleh pembangkit listrik, dalam megawatt (MW). Variabel ini merupakan target yang akan diprediksi.
 
-### Pemahaman Data:
-#### Visualisasi Distribusi Data
+### Visualisasi Distribusi Data
 ![image](https://github.com/user-attachments/assets/8098f6b2-4d89-4d24-b3bf-782280b4196e)
+
+![image](https://github.com/user-attachments/assets/d91386a1-c971-483a-b2c8-6fa01499cb69)
+
+### Visualisasi Relasi Fitur 
+![image](https://github.com/user-attachments/assets/5539935a-19a0-42d3-bbd0-6a0523970267)
+
+### Visualisasi Correlation Matrix
+![image](https://github.com/user-attachments/assets/b7fba119-c105-4258-91bb-fa06240f84c6)
+
 
 
 
