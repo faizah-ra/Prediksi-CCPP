@@ -397,7 +397,7 @@ Secara keseluruhan, performa XGBoost hampir setara dengan Gradient Boosting dan 
 
 ## Conclusion
 
-Dalam proyek ini, dilakukan serangkaian tahapan mulai dari pemahaman data (data understanding), praproses data (data preprocessing), pemilihan fitur (feature selection), hingga pelatihan dan evaluasi model menggunakan tiga algoritma machine learning regresi terkemuka: Random Forest Regressor, Gradient Boosting Regressor, dan XGBoost Regressor. Tujuan utama dari proyek ini adalah membangun model prediktif yang akurat untuk memperkirakan nilai target berdasarkan fitur input yang tersedia.
+Proyek ini telah melalui sejumlah tahapan penting, dimulai dari pemahaman data (data understanding), praproses data (data preprocessing), pemilihan fitur (feature selection), hingga pelatihan dan evaluasi model prediktif menggunakan tiga algoritma regresi berbasis machine learning, yaitu Random Forest Regressor, Gradient Boosting Regressor, dan XGBoost Regressor. Tujuan utama dari studi ini adalah mengembangkan model yang mampu memprediksi output daya pada sistem Combined Cycle Power Plant (CCPP) secara akurat berdasarkan variabel lingkungan yang tersedia.
 
 Evaluasi performa model dilakukan menggunakan tiga metrik utama, yaitu MAE (Mean Absolute Error), RMSE (Root Mean Squared Error), dan R² Score. Hasil evaluasi menunjukkan bahwa:
 
@@ -407,4 +407,4 @@ Evaluasi performa model dilakukan menggunakan tiga metrik utama, yaitu MAE (Mean
 
 - Random Forest Regressor (Tuned) juga menunjukkan performa sangat baik dengan R² sebesar 0.9626, MAE sebesar 2.2907, dan RMSE sebesar 3.3162. Meskipun berada sedikit di bawah dua model lainnya dari sisi metrik, model ini tetap akurat dan andal, dengan distribusi residual yang acak dan tidak menunjukkan bias yang berarti.
 
-Berdasarkan hasil evaluasi metrik dan analisis visual residual dari ketiga model, Gradient Boosting Regressor dipilih sebagai model terbaik dalam studi ini. Model ini tidak hanya memberikan akurasi tertinggi, tetapi juga menunjukkan stabilitas prediksi yang baik, distribusi error yang sehat, serta generalisasi yang optimal terhadap data uji. Oleh karena itu, Gradient Boosting direkomendasikan untuk digunakan dalam implementasi prediksi pada domain permasalahan ini.
+Berdasarkan hasil kuantitatif dari metrik evaluasi dan analisis visual terhadap residual ketiga model, Gradient Boosting Regressor dipilih sebagai model terbaik dalam studi ini. Model tersebut tidak hanya unggul secara akurasi, tetapi juga menawarkan stabilitas prediksi yang kuat dan distribusi kesalahan yang sehat. Oleh karena itu, Gradient Boosting Regressor direkomendasikan untuk diimplementasikan dalam sistem prediksi output daya CCPP, guna mendukung efisiensi operasional dan pengambilan keputusan berbasis data di sektor energi.
