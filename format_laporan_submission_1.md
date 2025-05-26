@@ -40,11 +40,11 @@ Data yang digunakan dalam proyek ini merupakan dataset dari Combined Cycle Power
 
 
 ### Variabel-variabel pada dataset Combined Cycle Power Plant adalah sebagai berikut:
-- <AT (Ambient Temperature)> : Suhu udara ambien di sekitar pembangkit listrik, diukur dalam derajat Celsius.
-- <V (Exhaust Vacuum)> : Tekanan vakum pada kondensor pembangkit listrik, diukur dalam cm Hg.
-- <AP (Ambient Pressure)> : Tekanan udara ambien, diukur dalam milibar (mbar).
-- <RH (Relative Humidity)> : Kelembapan relatif udara ambien, dalam persen (%).
-- <PE (Electrical Power Output)> : Output daya listrik yang dihasilkan oleh pembangkit listrik, dalam megawatt (MW). Variabel ini merupakan target yang akan diprediksi.
+- ```AT (Ambient Temperature)``` : Suhu udara ambien di sekitar pembangkit listrik, diukur dalam derajat Celsius.
+- ```V (Exhaust Vacuum)``` : Tekanan vakum pada kondensor pembangkit listrik, diukur dalam cm Hg.
+- ```AP (Ambient Pressure)``` : Tekanan udara ambien, diukur dalam milibar (mbar).
+- ```RH (Relative Humidity)``` : Kelembapan relatif udara ambien, dalam persen (%).
+- ```PE (Electrical Power Output)``` : Output daya listrik yang dihasilkan oleh pembangkit listrik, dalam megawatt (MW). Variabel ini merupakan target yang akan diprediksi.
 
 ### Visualisasi Distribusi Data
 ![image](https://github.com/user-attachments/assets/8098f6b2-4d89-4d24-b3bf-782280b4196e)
@@ -99,19 +99,146 @@ Tekanan udara (AP) dan kelembaban (RH) sendiri hanya memiliki hubungan yang sang
 Secara keseluruhan, informasi ini memberikan wawasan penting tentang faktor-faktor yang memengaruhi output energi. Suhu dan tekanan vakum tampaknya menjadi indikator paling signifikan karena pengaruhnya yang kuat terhadap penurunan performa sistem, sedangkan tekanan udara dan kelembaban relatif memberikan kontribusi positif yang dapat mendukung peningkatan efisiensi dalam kondisi tertentu. Analisis ini dapat menjadi dasar dalam pengambilan keputusan atau pengembangan model prediktif yang lebih akurat.
 
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+-  Penghapusan Duplikasi Data
+```python
+# Remove duplicate rows from the DataFrame 'data' to ensure data quality and avoid bias
+data = data.drop_duplicates()
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+# Check again for any remaining duplicate rows after removal
+number_of_duplicates = data.duplicated().sum()
+
+# Print the number of duplicates found after dropping duplicates, expected to be zero
+print(f"Number of duplicates after removal: {number_of_duplicates}")
+```
+Pada tahap ini, dilakukan penghapusan baris-baris duplikat dalam dataset menggunakan fungsi drop_duplicates(). Duplikasi data dapat menyebabkan bias dalam model karena model akan "menghitung ulang" informasi yang sama berulang kali. Setelah penghapusan, dicek kembali jumlah baris duplikat yang tersisa, yang diharapkan menjadi nol. Langkah ini penting untuk memastikan kualitas data yang digunakan untuk pelatihan model tetap terjaga dan tidak memberikan bobot berlebih pada data yang sama.
+
+- Penanganan Outlier dengan Metode IQR dan Deteksi Outlier
+```python
+# Function to cap outliers in a specific column using the IQR method
+def cap_outliers(data, col):
+    Q1 = data[col].quantile(0.25)
+    Q3 = data[col].quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    data[col] = np.where(data[col] < lower_bound, lower_bound, data[col])
+    data[col] = np.where(data[col] > upper_bound, upper_bound, data[col])
+    return data
+
+# Function to detect outliers using Z-score method
+def zscore_outliers(data, threshold=3):
+    outliers = pd.DataFrame()
+    for col in data.select_dtypes(include=[np.number]).columns:
+        z_scores = zscore(data[col])
+        outliers[col] = np.where(np.abs(z_scores) > threshold, 1, 0)
+    return outliers
+
+# Function to detect outliers using IQR method
+def iqr_outliers(data):
+    outliers = pd.DataFrame()
+    for col in data.select_dtypes(include=[np.number]).columns:
+        Q1 = data[col].quantile(0.25)
+        Q3 = data[col].quantile(0.75)
+        IQR = Q3 - Q1
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+        outliers[col] = ((data[col] < lower_bound) | (data[col] > upper_bound)).astype(int)
+    return outliers
+
+# Apply outlier capping directly on the original data for 'AP' and 'RH' columns
+data = cap_outliers(data, 'AP')
+data = cap_outliers(data, 'RH')
+
+# Display the number of outliers detected after capping using both methods
+print("Outliers after capping (Z-score):")
+print(zscore_outliers(data).sum())
+
+print("\nOutliers after capping (IQR):")
+print(iqr_outliers(data).sum())
+```
+Tahap ini mengatasi masalah outlier pada data, yaitu nilai ekstrim yang dapat memengaruhi kinerja model secara negatif. Fungsi cap_outliers menggunakan metode Interquartile Range (IQR) untuk membatasi nilai outlier pada kolom tertentu, yaitu 'AP' (Ambient Pressure) dan 'RH' (Relative Humidity), dengan cara menggantikan nilai di luar batas bawah dan atas dengan batas tersebut. Selain itu, disediakan fungsi deteksi outlier menggunakan dua metode populer, yaitu Z-score dan IQR, untuk mengevaluasi jumlah outlier yang tersisa setelah penanganan. Penanganan outlier penting untuk menjaga kestabilan model dan mencegah pengaruh nilai ekstrim yang bisa menyebabkan model overfitting atau kesalahan prediksi.
+
+- Seleksi Fitur dan Target untuk Model
+```python
+# Select the feature columns from the dataset to form the input matrix X
+# The features include 'AT' (Ambient Temperature), 'V' (Exhaust Vacuum), 'AP' (Ambient Pressure), and 'RH' (Relative Humidity)
+X = data[['AT', 'V', 'AP', 'RH']]
+
+# Select the target column 'PE' (Power Output) which is the variable to be predicted
+y = data['PE']
+
+# This separation into features (X) and target (y) is essential for supervised learning tasks
+# where the model learns to predict y based on the input features X
+```
+Pada tahap ini, dataset dipisahkan menjadi dua bagian utama: fitur (input) dan target (output). Fitur yang dipilih adalah kolom 'AT' (Temperatur), 'V' (Vacuum), 'AP' (Tekanan), dan 'RH' (Kelembapan), yang berfungsi sebagai variabel prediktor. Sedangkan kolom 'PE' (Power Output) dipilih sebagai target yang akan diprediksi oleh model. Proses pemisahan ini merupakan tahap penting dalam supervised learning agar model dapat belajar memetakan hubungan dari fitur ke target.
+
+- Pembagian Dataset menjadi Data Latih dan Data Uji
+```python
+# Split the dataset into training and testing sets
+# 'test_size=0.2' means 20% of the data is allocated for testing, and 80% for training
+# 'random_state=42' ensures reproducibility by fixing the random seed
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Print the shapes of the resulting datasets to verify the split
+print("X_train shape:", X_train.shape)  # Number of training samples and features
+print("X_test shape:", X_test.shape)    # Number of testing samples and features
+print("y_train shape:", y_train.shape)  # Number of training labels
+print("y_test shape:", y_test.shape)    # Number of testing labels
+```
+Tahap terakhir ini membagi data menjadi data latih dan data uji menggunakan fungsi train_test_split. Proporsi yang digunakan adalah 80% data untuk pelatihan dan 20% untuk pengujian. Parameter random_state=42 digunakan agar pembagian data bersifat deterministik dan dapat direproduksi pada eksekusi ulang. Pembagian ini penting agar model dapat dilatih dengan data latih dan kemudian diuji performanya dengan data uji yang belum pernah dilihat sebelumnya, guna mengukur kemampuan generalisasi model secara objektif.
+
 
 ## Modeling
-Tahapan ini membahas mengenai model machine learning yang digunakan untuk menyelesaikan permasalahan. Anda perlu menjelaskan tahapan dan parameter yang digunakan pada proses pemodelan.
+Pada tahap ini dilakukan pembangunan model machine learning untuk memprediksi output daya pada Combined Cycle Power Plants (CCPP) berdasarkan data yang telah melalui tahap preprocessing. Karena variabel target bersifat kontinu, maka pendekatan yang digunakan adalah regresi.
+Dua model regresi yang digunakan dalam proses pemodelan ini adalah:
+- ```Linear Regression: ``` Model Linear Regression merupakan algoritma dasar untuk regresi yang memodelkan hubungan linier antara fitur dan target. Model ini sederhana, cepat dalam proses pelatihan, dan mudah diinterpretasikan karena koefisiennya menjelaskan pengaruh masing-masing fitur. Namun, model ini kurang efektif pada data dengan pola non-linear, rentan terhadap outlier, dan tidak secara otomatis mengelola interaksi antar fitur.
+- ```Gradient Boosting:``` Model Gradient Boosting adalah ensemble model yang membangun banyak pohon keputusan secara bertahap, di mana setiap pohon baru bertugas memperbaiki kesalahan model sebelumnya dengan mengoptimalkan fungsi loss menggunakan gradient descent. Model ini mampu menangkap pola non-linear dengan baik dan menghasilkan performa tinggi jika parameter dituning secara tepat. Namun, pelatihan model ini lebih memakan waktu, rawan overfitting tanpa tuning yang baik, dan proses tuning parameternya cukup kompleks.
+Tahapan pembuatan model yang dilakukan adalah sebagai berikut:
+1. ```Inisialisasi dan Pelatihan Model:```
+   
+Pada tahap ini, dilakukan inisialisasi dan pelatihan dua model regresi yaitu Linear Regression dan Gradient Boosting. Masing-masing model dikonfigurasi dengan parameter tertentu yang telah disesuaikan untuk meningkatkan performa model terhadap data yang digunakan.
+   - Linear Regression
+     ```
+     # Inisialisasi model Linear Regression
+      lr_model = LinearRegression()
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan kelebihan dan kekurangan dari setiap algoritma yang digunakan.
-- Jika menggunakan satu algoritma pada solution statement, lakukan proses improvement terhadap model dengan hyperparameter tuning. **Jelaskan proses improvement yang dilakukan**.
-- Jika menggunakan dua atau lebih algoritma pada solution statement, maka pilih model terbaik sebagai solusi. **Jelaskan mengapa memilih model tersebut sebagai model terbaik**.
+      # Melatih model menggunakan data training
+      lr_model.fit(X_train, y_train)
+      ```
+     Penjelasan:
+      - LinearRegression() digunakan untuk membangun model regresi linear sederhana yang berusaha memetakan hubungan linier antara fitur (X_train) dan target (y_train).
+      - fit(X_train, y_train) digunakan untuk melatih model berdasarkan data pelatihan.
+     
+    - Gradient Boosting Regressor (Tuned)
+      ```
+      # Inisialisasi model Gradient Boosting dengan parameter yang telah dituning
+      gb_model = GradientBoostingRegressor(
+          n_estimators=200,      # Jumlah pohon yang digunakan
+          learning_rate=0.1,     # Seberapa besar kontribusi tiap pohon
+          max_depth=6,           # Kedalaman maksimum tiap pohon
+          random_state=42        # Untuk reprodusibilitas hasil
+      )
+      
+      # Melatih model menggunakan data training
+      gb_model.fit(X_train, y_train)
+      ```
+      Penjelasan:
+      - GradientBoostingRegressor adalah model ensemble berbasis decision tree yang menggabungkan beberapa pohon secara bertahap untuk memperbaiki kesalahan prediksi.
+      - Parameter n_estimators, learning_rate, dan max_depth telah disesuaikan (tuning) untuk mendapatkan performa terbaik.
+        
+2. ```Evaluasi Model:```
+   
+Evaluasi model dilakukan menggunakan tiga metrik utama: Mean Absolute Error (MAE): Rata-rata dari selisih absolut antara prediksi dan nilai asli. Root Mean Squared Error (RMSE): Akar dari rata-rata kuadrat selisih antara prediksi dan nilai asli. R² Score: Mengukur seberapa baik variasi data target dapat dijelaskan oleh fitur.
+
+| Model                     | MAE      | RMSE     | R²       |
+| ------------------------- | -------- | -------- | -------- |
+| Linear Regression         | 3.620537 | 4.586971 | 0.928409 |
+| Gradient Boosting (Tuned) | 2.205147 | 3.192256 | 0.965326 |
+
+3. ```Analisis dan Pemilihan Model Terbaik```
+   
+Berdasarkan hasil evaluasi di atas, Gradient Boosting Regressor memberikan performa yang lebih baik dibandingkan Linear Regression, dengan nilai MAE dan RMSE yang lebih rendah serta nilai R² Score yang lebih tinggi (0.9653).
+Hal ini menunjukkan bahwa model Gradient Boosting mampu menangkap kompleksitas dan non-linearitas data lebih baik daripada Linear Regression. Oleh karena itu, Gradient Boosting Regressor dipilih sebagai model terbaik untuk digunakan dalam tahap deployment atau inference selanjutnya.
 
 ## Evaluation
 Pada bagian ini anda perlu menyebutkan metrik evaluasi yang digunakan. Lalu anda perlu menjelaskan hasil proyek berdasarkan metrik evaluasi yang digunakan.
