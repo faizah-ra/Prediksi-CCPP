@@ -328,11 +328,13 @@ Setelah proses pelatihan model selesai, tahap selanjutnya adalah melakukan evalu
     
     Grafik ini menunjukkan hubungan antara nilai aktual dan prediksi model. Titik-titik yang mendekati garis merah putus-putus (garis identitas) menandakan bahwa prediksi model cukup akurat.
     
-    ![ResidualPlot_RF](./assets/rr_rf.png)
+ ![image](https://github.com/user-attachments/assets/18a8180f-e1ae-452f-ac36-46848c4bcf06)
+
     
     Plot residual menampilkan sebaran kesalahan prediksi terhadap nilai prediksi. Residual tersebar secara acak di sekitar nol, menandakan bahwa model tidak memiliki pola sistematik yang menunjukkan bias.
     
-    ![ResidualDistribution_RF](./assets/rd_rf.png)
+![image](https://github.com/user-attachments/assets/2ed9b85b-2d26-4f28-9dbf-e365e2747088)
+
     
     Histogram residual mendekati distribusi normal simetris dengan rata-rata mendekati nol. Ini menunjukkan bahwa kesalahan prediksi model bersifat acak dan tidak terdistribusi secara berat sebelah.
 
@@ -344,15 +346,18 @@ Setelah proses pelatihan model selesai, tahap selanjutnya adalah melakukan evalu
 
     Dengan MAE sebesar 0.0628, model XGBoost hanya memiliki rata-rata deviasi sekitar 0.06 poin dari nilai sebenarnya. Ini menandakan bahwa prediksi cukup konsisten dan tidak terlalu meleset. RMSE sebesar 0.0788 juga menunjukkan bahwa model XGBoost memiliki kesalahan prediksi yang rendah dan stabil. Dengan skor R² sebesar 0.9956, model XGBoost mampu menjelaskan 99.56% variasi dalam data. Hal ini menandakan bahwa model sangat baik dalam merepresentasikan hubungan antara fitur dan target.
     
-    ![ActualVSPredicted_XG](./assets/ap_xg.png)
+ ![image](https://github.com/user-attachments/assets/7fe8d97d-010c-4a50-98ee-3851f8658538)
+
     
     Grafik ini memperlihatkan korelasi antara nilai aktual dan hasil prediksi model. Sebagian besar titik berada sangat dekat dengan garis identitas, menandakan bahwa prediksi XGBoost sangat akurat dan lebih mendekati nilai sebenarnya dibanding model Random Forest.
     
-    ![ResidualPlot_XG](./assets/rr_xg.png)
+![image](https://github.com/user-attachments/assets/4c01c085-0f2d-413e-ae77-c71802e32531)
+
     
     Sebaran residual XGBoost menunjukkan pola yang acak dan simetris di sekitar garis nol. Tidak terdapat tren atau pola tertentu, yang mengindikasikan bahwa model ini memiliki kesalahan prediksi yang konsisten tanpa bias sistematis, lebih stabil dibanding Random Forest yang menunjukkan sedikit penyebaran residual lebih luas.
     
-    ![ResidualDistribution_XG](./assets/rd_xg.png)
+![image](https://github.com/user-attachments/assets/b75e088b-f49a-4e06-b1f4-0f4ec6428fa4)
+
     
     Histogram residual dari model XGBoost menunjukkan bentuk distribusi yang sangat mendekati distribusi normal, dengan puncak di sekitar nol. Hal ini memperkuat bukti bahwa kesalahan prediksi model bersifat acak dan tidak condong ke satu sisi, serta lebih terkonsentrasi dibanding model Random Forest, yang distribusinya sedikit lebih tersebar.
 
@@ -364,17 +369,23 @@ Setelah proses pelatihan model selesai, tahap selanjutnya adalah melakukan evalu
 
     MAE yang sangat rendah menunjukkan bahwa rata-rata selisih antara nilai prediksi dan aktual sangat kecil, menandakan model cukup presisi. RMSE lebih sensitif terhadap kesalahan besar, dan nilai yang rendah memperkuat bahwa model jarang membuat kesalahan besar dalam prediksi. R² Score mendekati 1, menandakan bahwa hampir seluruh variasi dalam data target berhasil dijelaskan oleh model, bahkan lebih baik daripada XGBoost maupun Random Forest.
      
-    ![ActualVSPredicted_LG](./assets/ap_lg.png)
+![image](https://github.com/user-attachments/assets/eff7265d-97a9-4a93-b133-4b0e9e656b93)
+
     
     Sebagian besar titik berada sangat rapat mengikuti garis identitas, menunjukkan bahwa prediksi LightGBM hampir sempurna. Akurasi prediksinya lebih tinggi dibandingkan model lain yang diuji.
     
-    ![ResidualPlot_LG](./assets/rr_lg.png)
+![image](https://github.com/user-attachments/assets/695df019-10d3-4fc9-9365-49b720f1121e)
+
     
     Residual tersebar secara acak di sekitar nol tanpa pola tertentu. Hal ini menunjukkan bahwa kesalahan prediksi bersifat acak dan tidak mengindikasikan bias sistematis yang mana menandakan model generalisasi dengan baik.
     
-    ![ResidualDistribution_LG](./assets/rd_lg.png)
+![image](https://github.com/user-attachments/assets/4fb11825-81d8-443f-977d-8f45ae457f03)
+
     
     Histogram residual menunjukkan bentuk distribusi yang sangat simetris dan mengerucut di sekitar nol. Hal ini mengindikasikan bahwa kesalahan model sangat kecil dan tersebar secara seimbang.
+
+![image](https://github.com/user-attachments/assets/ccdadb7e-9796-4f35-b30b-59d1341814a6)
+![image](https://github.com/user-attachments/assets/3efb673b-54a9-4bf1-82a5-38aeb0c13b7f)
 
 
 Pada bagian ini anda perlu menyebutkan metrik evaluasi yang digunakan. Lalu anda perlu menjelaskan hasil proyek berdasarkan metrik evaluasi yang digunakan.
