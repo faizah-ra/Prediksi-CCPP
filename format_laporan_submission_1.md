@@ -396,8 +396,7 @@ Secara keseluruhan, performa XGBoost hampir setara dengan Gradient Boosting dan 
     Histogram residual menunjukkan bentuk distribusi yang menyerupai distribusi normal dengan puncak di sekitar nol. Ini mengindikasikan bahwa sebagian besar prediksi model memiliki kesalahan kecil, dan hanya sedikit outlier. Distribusi ini memperkuat asumsi bahwa model memiliki stabilitas dan akurasi yang baik, dengan galat yang cenderung acak.
 
 ## Conclusion
-![image](https://github.com/user-attachments/assets/ccdadb7e-9796-4f35-b30b-59d1341814a6)
-![image](https://github.com/user-attachments/assets/3efb673b-54a9-4bf1-82a5-38aeb0c13b7f)
+
 Dalam proyek ini, dilakukan serangkaian tahapan mulai dari pemahaman data (data understanding), praproses data (data preprocessing), pemilihan fitur (feature selection), hingga pelatihan dan evaluasi model menggunakan tiga algoritma machine learning regresi terkemuka: Random Forest Regressor, Gradient Boosting Regressor, dan XGBoost Regressor. Tujuan utama dari proyek ini adalah membangun model prediktif yang akurat untuk memperkirakan nilai target berdasarkan fitur input yang tersedia.
 
 Evaluasi performa model dilakukan menggunakan tiga metrik utama, yaitu MAE (Mean Absolute Error), RMSE (Root Mean Squared Error), dan R² Score. Hasil evaluasi menunjukkan bahwa:
