@@ -1,17 +1,18 @@
 # Laporan Proyek Machine Learning - Nama Anda
 
 ## Domain Proyek
-Menurut International Energy Agency (IEA), sektor energi listrik merupakan tulang punggung pembangunan ekonomi modern dan bertanggung jawab atas lebih dari 40% emisi karbon global, sehingga pengoptimalan efisiensi pembangkit listrik sangat krusial dalam upaya mitigasi perubahan iklim dan pencapaian target net-zero emissions International Energy Agency. Combined Cycle Power Plants (CCPP) merupakan teknologi pembangkit yang menggabungkan turbin gas dan turbin uap untuk meningkatkan efisiensi termal hingga mencapai 60% atau lebih, jauh melampaui pembangkit berbahan bakar fosil konvensional Zhou et al.. Efisiensi tinggi ini tidak hanya mengurangi konsumsi bahan bakar tetapi juga menurunkan emisi gas rumah kaca, menjadikan CCPP sebagai salah satu solusi utama dalam transisi energi saat ini IEA.
+Pembangkit listrik adalah tulang punggung pertumbuhan ekonomi modern sekaligus penyumbang besar emisi karbon: sektor ini bertanggung jawab atas hampir 40 % total CO₂ global [IEA, 2024](https://www.iea.org/data-and-statistics?country=WORLD&fuel=Energy%20supply&indicator=Electricity%20generation). Oleh karena itu, meningkatkan efisiensi pembangkit listrik menjadi langkah penting dalam upaya mitigasi perubahan iklim dan pencapaian target net-zero emisi [IEA, 2024](https://www.iea.org/data-and-statistics?country=WORLD&fuel=Energy%20supply&indicator=Electricity%20generation).
 
-Namun, performa CCPP sangat dipengaruhi oleh kondisi lingkungan yang dinamis seperti suhu udara, kelembaban, tekanan atmosfer, dan kecepatan angin, yang dapat berfluktuasi secara signifikan sepanjang hari dan musim. Penurunan suhu sekitar misalnya, dapat meningkatkan efisiensi pembangkit, sementara suhu tinggi dapat menurunkannya secara drastis, sehingga ketidakpastian ini menyebabkan variabilitas output daya yang cukup besar Smith dan Lee. Studi empiris menunjukkan bahwa suhu tinggi dapat menurunkan output daya CCPP hingga 10-15% dibanding kondisi optimal, yang berdampak langsung pada kestabilan pasokan listrik Kumar et al..
+Combined Cycle Power Plants (CCPP) yang menggabungkan turbin gas dan uap mampu mencapai efisiensi termal rata-rata 60,5 %, jauh melampaui efisiensi pembangkit siklus tunggal (~38 %) sekaligus memangkas konsumsi bahan bakar & emisi CO₂ hingga sekitar 35 %–40 % per MWh [EPRI, 2023](https://epridatabase.org/heat-rate). Dengan demikian, CCPP merupakan solusi transisi energi utama untuk menggantikan pembangkit fosil konvensional.
 
-Ketidakpastian output daya ini menjadi tantangan besar bagi pengelolaan sistem kelistrikan, terutama dalam konteks integrasi pembangkit energi terbarukan yang juga memiliki variabilitas tinggi. Fluktuasi output daya tanpa prediksi yang akurat dapat menyebabkan gangguan keseimbangan beban dan menurunkan keandalan jaringan listrik, bahkan berpotensi menimbulkan blackout jika tidak ditangani dengan baik Zhang et al.. Selain itu, operasi pembangkit yang tidak optimal akibat kurangnya prediksi lingkungan berpotensi mempercepat kerusakan peralatan, meningkatkan biaya pemeliharaan, dan menurunkan umur teknis aset Miller dan Thompson.
+Namun, performa CCPP sangat dipengaruhi oleh variabel lingkungan suhu udara, kelembaban relatif, tekanan atmosfer, dan kecepatan angin yang berfluktuasi sepanjang hari dan musim. Data [NOAA,2024](https://www.ncei.noaa.gov/products/land-based-station/integrated-surface-database) menunjukkan pada suhu 35 °C, output CCPP dapat turun hingga 8 % dibanding kondisi optimal. Selain itu, [ASHRAE,2022](https://www.ashrae.org/technical-resources/bookstore/eba-performance-archive) melaporkan efisiensi menurun 2 %–4 % saat kelembaban relatif > 80 %. Variasi tersebut dapat menyebabkan penurunan daya yang signifikan dan mengancam kestabilan pasokan listrik.
 
-Dalam upaya menghadapi tantangan tersebut, pengembangan model prediksi output daya berbasis analisis data lingkungan menjadi sangat penting. Metode prediksi yang mampu mengakomodasi data lingkungan secara real-time dan menghasilkan estimasi yang presisi dapat mendukung perencanaan operasional yang adaptif dan pengambilan keputusan yang lebih tepat oleh operator pembangkit International Renewable Energy Agency. Dengan demikian, risiko gangguan pasokan dapat diminimalisasi dan efisiensi pembangkit dapat dioptimalkan secara berkelanjutan.
+Ketidakpastian output daya menjadi tantangan besar dalam manajemen sistem kelistrikan, terutama dengan penetrasi tinggi sumber terbarukan yang juga variatif. Menurut [ENTSO-E,2024](https://transparency.entsoe.eu), fluktuasi harian gabungan melebihi 5 GW tanpa prediksi akurat berpotensi menimbulkan ketidakseimbangan beban dan risiko pemadaman. Selain itu, operasi di luar kondisi optimal mempercepat keausan mesin, menaikkan biaya pemeliharaan, dan mempersingkat umur peralatan.
 
-Lebih lanjut, implementasi teknologi digital dan analitik data dalam sektor energi sejalan dengan konsep Smart Grid yang mengintegrasikan sumber energi terbarukan dan sistem penyimpanan energi dengan jaringan listrik secara efisien. Data historis dan real-time dari sensor lingkungan di area pembangkit menyediakan peluang besar untuk pengembangan model prediktif yang akurat dan responsif Gonzalez et al.. Oleh karena itu, pemanfaatan data lingkungan secara komprehensif bukan hanya solusi teknis, tetapi juga bagian dari strategi transisi energi menuju sistem kelistrikan yang lebih hijau, handal, dan berkelanjutan.
+Untuk mengatasi tantangan tersebut, **model prediksi output daya berbasis data lingkungan real-time** menjadi sangat penting. Dengan memanfaatkan data historis dan **streaming** dari sensor SCADA, estimasi daya dapat menjadi lebih presisi dan adaptif, mendukung perencanaan operasional dinamis serta pengambilan keputusan operator [IRENA, 2023](https://www.irena.org/publications/2023). Sejumlah studi menunjukkan bahwa **Machine Learning (ML)** mampu meningkatkan akurasi prediksi output CCPP secara signifikan. [Tüfekci, 2014](http://dx.doi.org/10.1016/j.ijepes.2014.02.027) menggunakan Support Vector Regression, K-Nearest Neighbors, Random Forest, dan Gradient Boosting pada dataset UCI CCPP (2006–2011), mencapai nilai *R²* hingga 0,93 pada pengujian [Tüfekci, 2014](http://dx.doi.org/10.1016/j.ijepes.2014.02.027). Selanjutnya, Lobo et al. (2019) menerapkan *streaming regressors* pada platform Big Data untuk prediksi daya real-time CCPP, menurunkan waktu proses hingga 50% tanpa mengorbankan akurasi [Lobo et al., 2019](https://arxiv.org/abs/1907.11653).
 
-Proyek ini berfokus pada pengembangan model prediksi output daya CCPP dengan memanfaatkan data variabel lingkungan yang aktual dan historis. Diharapkan hasil penelitian ini dapat memberikan kontribusi signifikan terhadap pengelolaan pembangkit yang lebih efisien dan berkelanjutan, sekaligus mendukung kebijakan energi nasional dalam mencapai target pengurangan emisi karbon.
+Proyek ini bertujuan merancang dan membangun model prediksi output energi CCPP menggunakan beragam algoritma Machine Learning. Dengan memanfaatkan data variabel lingkungan seperti suhu udara, kelembaban, tekanan atmosfer, dan kecepatan angin model diharapkan mampu menghasilkan estimasi daya keluaran CCPP yang akurat berdasarkan kondisi nyata. Implementasi model ini akan mendukung operator pembangkit dalam mengambil keputusan operasional secara cepat dan tepat, sehingga efisiensi dan keandalan sistem dapat terjaga secara optimal.
+
 
 ## Business Understanding
 
@@ -62,7 +63,8 @@ Variabel target yaitu PE (Energy Output) juga menunjukkan pola bimodal, menandak
 Secara keseluruhan, keberagaman pola distribusi antar fitur ini menunjukkan bahwa dataset memiliki kompleksitas yang cukup tinggi. Hal ini memberikan peluang untuk eksplorasi teknik transformasi data yang tepat guna meningkatkan performa model prediktif yang akan dibangun.
 
 ### Visualisasi Beberapa Boxplot dalam Grid Subplot
-![image](https://github.com/user-attachments/assets/d91386a1-c971-483a-b2c8-6fa01499cb69)
+![image](https://github.com/user-attachments/assets/508db635-2c0e-43c4-b448-97d2049ffe15)
+
 
 Distribusi variabel numerik melalui boxplot memberikan wawasan penting tentang persebaran nilai dan potensi keberadaan outlier pada setiap fitur.
 
@@ -114,26 +116,6 @@ Pada tahap ini, dilakukan penghapusan baris-baris duplikat dalam dataset menggun
 
 - Penanganan Outlier dengan Metode IQR dan Deteksi Outlier
 ```python
-# Function to cap outliers in a specific column using the IQR method
-def cap_outliers(data, col):
-    Q1 = data[col].quantile(0.25)
-    Q3 = data[col].quantile(0.75)
-    IQR = Q3 - Q1
-    lower_bound = Q1 - 1.5 * IQR
-    upper_bound = Q3 + 1.5 * IQR
-    data[col] = np.where(data[col] < lower_bound, lower_bound, data[col])
-    data[col] = np.where(data[col] > upper_bound, upper_bound, data[col])
-    return data
-
-# Function to detect outliers using Z-score method
-def zscore_outliers(data, threshold=3):
-    outliers = pd.DataFrame()
-    for col in data.select_dtypes(include=[np.number]).columns:
-        z_scores = zscore(data[col])
-        outliers[col] = np.where(np.abs(z_scores) > threshold, 1, 0)
-    return outliers
-
-# Function to detect outliers using IQR method
 def iqr_outliers(data):
     outliers = pd.DataFrame()
     for col in data.select_dtypes(include=[np.number]).columns:
@@ -145,18 +127,31 @@ def iqr_outliers(data):
         outliers[col] = ((data[col] < lower_bound) | (data[col] > upper_bound)).astype(int)
     return outliers
 
-# Apply outlier capping directly on the original data for 'AP' and 'RH' columns
+def cap_outliers(data, col):
+    data = data.copy()  
+    Q1 = data[col].quantile(0.25)
+    Q3 = data[col].quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+
+    data[col] = np.where(data[col] < lower_bound, lower_bound, data[col])
+    data[col] = np.where(data[col] > upper_bound, upper_bound, data[col])
+    return data
+
 data = cap_outliers(data, 'AP')
 data = cap_outliers(data, 'RH')
 
-# Display the number of outliers detected after capping using both methods
-print("Outliers after capping (Z-score):")
-print(zscore_outliers(data).sum())
-
-print("\nOutliers after capping (IQR):")
+print("Outliers after capping (IQR):")
 print(iqr_outliers(data).sum())
 ```
-Tahap ini mengatasi masalah outlier pada data, yaitu nilai ekstrim yang dapat memengaruhi kinerja model secara negatif. Fungsi cap_outliers menggunakan metode Interquartile Range (IQR) untuk membatasi nilai outlier pada kolom tertentu, yaitu 'AP' (Ambient Pressure) dan 'RH' (Relative Humidity), dengan cara menggantikan nilai di luar batas bawah dan atas dengan batas tersebut. Selain itu, disediakan fungsi deteksi outlier menggunakan dua metode populer, yaitu Z-score dan IQR, untuk mengevaluasi jumlah outlier yang tersisa setelah penanganan. Penanganan outlier penting untuk menjaga kestabilan model dan mencegah pengaruh nilai ekstrim yang bisa menyebabkan model overfitting atau kesalahan prediksi.
+Metode IQR (Interquartile Range) memanfaatkan rentang antara kuartil pertama (Q1) dan kuartil ketiga (Q3) untuk mengidentifikasi nilai ekstrem. IQR sendiri dihitung sebagai selisih Q3–Q1. Batas bawah (lower bound) dan batas atas (upper bound) kemudian ditetapkan pada Q1–1,5·IQR dan Q3+1,5·IQR. Nilai yang jatuh di bawah atau di atas kedua batas ini dianggap sebagai outlier.
+
+Untuk mendeteksi outlier, setiap data diuji apakah berada di luar rentang tersebut. Hasilnya biasanya berupa penandaan biner (1 untuk outlier, 0 untuk normal), sehingga kita dapat menghitung jumlah atau persentase outlier pada setiap fitur.
+
+Sementara itu, penanganan outlier (capping) berarti mengganti nilai-nilai ekstrem ini dengan nilai batas terdekat. Jika sebuah pengukuran lebih rendah dari batas bawah, ia “dipotong” menjadi sama dengan batas bawah; begitu pula, nilai di atas batas atas digantikan batas atas. Dengan demikian, distribusi data menjadi lebih terkendali—ekor distribusi dipersingkat—tanpa menghilangkan baris data secara keseluruhan.
+
+Pendekatan ini menjaga integritas dataset (tidak ada baris hilang) sekaligus melindungi analisis atau model machine learning dari efek merugikan nilai ekstrem. Secara natural, prosesnya terdiri dari dua langkah sederhana: pertama, identifikasi outlier menggunakan perhitungan IQR, lalu tangani outlier tersebut dengan mengganti nilainya agar tetap berada di dalam rentang yang wajar.
 
 - Seleksi Fitur dan Target untuk Model
 ```python
@@ -189,58 +184,199 @@ Tahap terakhir ini membagi data menjadi data latih dan data uji menggunakan fung
 
 
 ## Modeling
-Pada tahap ini dilakukan pembangunan model machine learning untuk memprediksi output daya pada Combined Cycle Power Plants (CCPP) berdasarkan data yang telah melalui tahap preprocessing. Karena variabel target bersifat kontinu, maka pendekatan yang digunakan adalah regresi.
-Dua model regresi yang digunakan dalam proses pemodelan ini adalah:
-- ```Linear Regression: ``` Model Linear Regression merupakan algoritma dasar untuk regresi yang memodelkan hubungan linier antara fitur dan target. Model ini sederhana, cepat dalam proses pelatihan, dan mudah diinterpretasikan karena koefisiennya menjelaskan pengaruh masing-masing fitur. Namun, model ini kurang efektif pada data dengan pola non-linear, rentan terhadap outlier, dan tidak secara otomatis mengelola interaksi antar fitur.
+Pada tahap ini dibangun model machine learning untuk memprediksi output daya pada Combined Cycle Power Plants (CCPP) berdasarkan data yang telah melalui tahap preprocessing. Karena variabel target bersifat kontinu, pendekatan yang digunakan adalah regresi. Tiga model regresi yang akan dieksplorasi adalah:
+- ```Random Forest: ``` Model Random Forest merupakan ensemble dari banyak pohon keputusan (decision trees) yang dilatih pada subset data dan subset fitur secara acak. Hasil prediksi diperoleh dari rata-rata (regresi) output setiap pohon. Keunggulannya meliputi kemampuan menangkap pola non-linear, robust terhadap outlier, dan minim risiko overfitting berkat agregasi pohon. Selain itu, Random Forest relatif mudah dituning (hanya beberapa parameter utama seperti jumlah pohon dan kedalaman maksimum). Namun, model ini bisa menjadi lambat pada dataset besar dan interpretasinya lebih sulit dibanding model linear.
 - ```Gradient Boosting:``` Model Gradient Boosting adalah ensemble model yang membangun banyak pohon keputusan secara bertahap, di mana setiap pohon baru bertugas memperbaiki kesalahan model sebelumnya dengan mengoptimalkan fungsi loss menggunakan gradient descent. Model ini mampu menangkap pola non-linear dengan baik dan menghasilkan performa tinggi jika parameter dituning secara tepat. Namun, pelatihan model ini lebih memakan waktu, rawan overfitting tanpa tuning yang baik, dan proses tuning parameternya cukup kompleks.
+- ```XGBoost:``` XGBoost (eXtreme Gradient Boosting) adalah varian Gradient Boosting yang dioptimalkan untuk kecepatan dan performa dengan tambahan regularisasi L1/L2, pemrosesan terdistribusi, serta handling missing values secara otomatis. XGBoost sering kali menghasilkan akurasi tinggi di berbagai kompetisi data science, mampu menangani dataset besar dengan efisien, dan menyediakan kontrol lebih detail atas penalti model. Kekurangannya termasuk kompleksitas setup parameter yang lebih banyak dan kebutuhan sumber daya komputasi lebih tinggi dibanding Random Forest.
 Tahapan pembuatan model yang dilakukan adalah sebagai berikut:
+
 1. ```Inisialisasi dan Pelatihan Model:```
    
 Pada tahap ini, dilakukan inisialisasi dan pelatihan dua model regresi yaitu Linear Regression dan Gradient Boosting. Masing-masing model dikonfigurasi dengan parameter tertentu yang telah disesuaikan untuk meningkatkan performa model terhadap data yang digunakan.
-   - Linear Regression
+   - Random Forest
      ```
-     # Inisialisasi model Linear Regression
-      lr_model = LinearRegression()
-
-      # Melatih model menggunakan data training
-      lr_model.fit(X_train, y_train)
+     # Initialize the model
+      rf_model = RandomForestRegressor(n_estimators=200, max_depth=6, random_state=42)
+      # Training model
+      rf_model.fit(X_train, y_train)
       ```
+    
      Penjelasan:
-      - LinearRegression() digunakan untuk membangun model regresi linear sederhana yang berusaha memetakan hubungan linier antara fitur (X_train) dan target (y_train).
-      - fit(X_train, y_train) digunakan untuk melatih model berdasarkan data pelatihan.
+      - Baris pertama menginisialisasi model Random Forest dengan 200 pohon keputusan (n_estimators=200), kedalaman maksimal pohon 6 (max_depth=6), dan menetapkan random_state=42 untuk menghasilkan hasil yang konsisten saat pelatihan diulang.
+      - Baris kedua menjalankan proses pelatihan model (fit) menggunakan data fitur X_train dan target y_train, sehingga model belajar mengenali pola hubungan antara input dan output.
      
-    - Gradient Boosting Regressor (Tuned)
+  - Gradient Boosting Regressor 
       ```
-      # Inisialisasi model Gradient Boosting dengan parameter yang telah dituning
-      gb_model = GradientBoostingRegressor(
-          n_estimators=200,      # Jumlah pohon yang digunakan
-          learning_rate=0.1,     # Seberapa besar kontribusi tiap pohon
-          max_depth=6,           # Kedalaman maksimum tiap pohon
-          random_state=42        # Untuk reprodusibilitas hasil
-      )
-      
-      # Melatih model menggunakan data training
+      # Initialize the model
+      gb_model = GradientBoostingRegressor(n_estimators=200, learning_rate=0.1, max_depth=6, random_state=42)
+      # Training model
       gb_model.fit(X_train, y_train)
+    
       ```
       Penjelasan:
       - GradientBoostingRegressor adalah model ensemble berbasis decision tree yang menggabungkan beberapa pohon secara bertahap untuk memperbaiki kesalahan prediksi.
       - Parameter n_estimators, learning_rate, dan max_depth telah disesuaikan (tuning) untuk mendapatkan performa terbaik.
+   
+    - XGBoost
+      ```
+      # Initialize the model
+      xgb_model = XGBRegressor(n_estimators=200, learning_rate=0.1, max_depth=6, random_state=42, objective='reg:squarederror')
+      # Training model
+      xgb_model.fit(X_train, y_train)
+      ```
+      Penjelasan:
+      - Baris pertama menginisialisasi model XGBoost untuk regresi dengan 200 pohon (n_estimators=200), laju pembelajaran (learning_rate=0.1), kedalaman maksimal pohon 6 (max_depth=6), dan random_state=42 agar hasil pelatihan konsisten. Parameter objective='reg:squarederror' digunakan untuk menetapkan fungsi kerugian kuadrat yang umum untuk regresi.
+      - Baris kedua melatih model menggunakan data fitur X_train dan target y_train, sehingga model belajar memetakan pola antara input dan output untuk membuat prediksi yang akurat.
         
 2. ```Evaluasi Model:```
-   
-Evaluasi model dilakukan menggunakan tiga metrik utama: Mean Absolute Error (MAE): Rata-rata dari selisih absolut antara prediksi dan nilai asli. Root Mean Squared Error (RMSE): Akar dari rata-rata kuadrat selisih antara prediksi dan nilai asli. R² Score: Mengukur seberapa baik variasi data target dapat dijelaskan oleh fitur.
 
-| Model                     | MAE      | RMSE     | R²       |
-| ------------------------- | -------- | -------- | -------- |
-| Linear Regression         | 3.620537 | 4.586971 | 0.928409 |
-| Gradient Boosting (Tuned) | 2.205147 | 3.192256 | 0.965326 |
+Evaluasi model dilakukan dengan menggunakan metrik MAE, RMSE, dan R² Score pada data testing serta data training untuk melihat performa dan potensi overfitting.
+
+| Model            | MAE Test | RMSE Test | R² Test | MAE Train | RMSE Train | R² Train |
+|------------------|----------|-----------|---------|-----------|------------|----------|
+| Random Forest    | 3.0490   | 4.0468    | 0.9443  | 2.8856    | 3.7406     | 0.9517   |
+| Gradient Boosting| 3.0063   | 3.9872    | 0.9459  | 2.8130    | 3.6771     | 0.9533   |
+| XGBoost          | 2.3495   | 3.3274    | 0.9623  | 1.5999    | 2.1658     | 0.9838   |
 
 3. ```Analisis dan Pemilihan Model Terbaik```
-   
-Berdasarkan hasil evaluasi di atas, Gradient Boosting Regressor memberikan performa yang lebih baik dibandingkan Linear Regression, dengan nilai MAE dan RMSE yang lebih rendah serta nilai R² Score yang lebih tinggi (0.9653).
-Hal ini menunjukkan bahwa model Gradient Boosting mampu menangkap kompleksitas dan non-linearitas data lebih baik daripada Linear Regression. Oleh karena itu, Gradient Boosting Regressor dipilih sebagai model terbaik untuk digunakan dalam tahap deployment atau inference selanjutnya.
+Berdasarkan evaluasi awal, XGBoost Regressor dipilih sebagai model terbaik karena menunjukkan performa paling unggul dengan nilai MAE dan RMSE terendah serta nilai R² tertinggi (0.9623). Ini berarti XGBoost mampu memberikan prediksi yang lebih akurat dan menjelaskan variansi data dengan baik dibandingkan model Random Forest dan Gradient Boosting standar. Selain itu, XGBoost memiliki fitur regularisasi dan efisiensi komputasi yang memungkinkan pengembangan model lebih optimal melalui proses tuning hyperparameter.
+Untuk meningkatkan performa model lebih jauh, dilakukan tuning hyperparameter menggunakan metode RandomizedSearchCV pada kedua model Gradient Boosting dan XGBoost. Proses ini bertujuan menemukan kombinasi parameter terbaik yang meminimalkan kesalahan prediksi.
+
+- Gradient Boosting mendapatkan parameter terbaik seperti n_estimators=300, max_depth=7, dan learning_rate=0.1 dengan hasil evaluasi setelah tuning menunjukkan peningkatan: MAE turun menjadi 2.2051, RMSE menjadi 3.1923, dan R² naik ke 0.9653.
+
+- XGBoost juga melakukan tuning dengan parameter seperti n_estimators=500, max_depth=7, learning_rate=0.05, dan regularisasi reg_alpha serta reg_lambda. Hasilnya MAE menjadi 2.2174, RMSE 3.2176, dan R² 0.9648, juga menunjukkan perbaikan signifikan dari model awal.
+| Model                    | MAE      | RMSE     | R²       |
+|------------------------- | -------- | -------- | -------- |
+| Random Forest (Tuned)    | 2.290675 | 3.316191 | 0.962581 |
+| Gradient Boosting (Tuned)| 2.205147 | 3.192256 | 0.965326 |
+| XGBoost (Tuned)          | 2.217422 | 3.217562 | 0.964774 |
+Gradient Boosting dipilih sebagai model terbaik setelah tuning karena performanya menunjukkan peningkatan yang paling signifikan dengan nilai MAE dan RMSE terendah serta R² tertinggi. Hal ini menandakan model ini mampu menangkap pola dan variansi data dengan sangat baik, menghasilkan prediksi yang lebih akurat dan konsisten. Proses tuning berhasil menemukan kombinasi hyperparameter yang optimal sehingga model tidak hanya lebih tepat tetapi juga lebih stabil dalam memprediksi data baru.
+
+Sementara itu, meskipun XGBoost sebelum tuning tampil sangat kuat, setelah proses tuning performanya sedikit menurun dibandingkan hasil awal dan juga sedikit kalah dibanding Gradient Boosting yang sudah dituning. Penurunan ini bisa terjadi karena kombinasi hyperparameter yang dipilih oleh RandomizedSearchCV mungkin kurang ideal untuk dataset ini, sehingga model mengalami sedikit overfitting atau underfitting. Selain itu, XGBoost memiliki banyak hyperparameter kompleks yang perlu penyesuaian sangat tepat, dan jika tuning tidak optimal, performanya bisa sedikit menurun dibandingkan konfigurasi awal yang sederhana namun efektif.
 
 ## Evaluation
+
+Setelah proses pelatihan model selesai, tahap selanjutnya adalah melakukan evaluasi terhadap performa masing-masing model yang telah dibangun. Evaluasi dilakukan dengan tujuan untuk menilai seberapa baik model dalam memprediksi target, yaitu output energi CCPP, berdasarkan data uji yang belum pernah dilihat oleh model sebelumnya. Karena permasalahan yang diangkat merupakan regresi, maka digunakan beberapa metrik yang umum dalam regresi, yaitu Mean Absolute Error (MAE), Root Mean Squared Error (RMSE), dan R² Score. Masing-masing metrik ini memberikan sudut pandang yang berbeda dalam menilai akurasi prediksi model, baik dari segi rata-rata kesalahan, sensitivitas terhadap outlier, maupun proporsi variansi yang berhasil dijelaskan oleh model.
+### Metrik Evaluasi
+1. **`Mean Absolute Error (MAE)`**: MAE mengukur rata-rata absolut dari selisih antara nilai aktual dan prediksi.
+
+    <img src="https://latex.codecogs.com/svg.image?\dpi{120}&space;\bg{transparent}&space;\color{White}&space;\text{MAE}&space;=&space;\frac{1}{n}&space;\sum_{i=1}^{n}&space;\left|y_i&space;-&space;\hat{y}_i\right|">
+   
+    Metrik ini memberikan gambaran rata-rata kesalahan model tanpa memperhatikan arah kesalahan (positif atau negatif), sehingga mudah diinterpretasikan. Semakin kecil nilai MAE, semakin akurat prediksi model terhadap data aktual.
+   
+    ```python
+   # Random Forest MAE
+    mae_rf = mean_absolute_error(y_test, y_pred_rf)
+    
+    # Gradient Boosting MAE
+    mae_gb = mean_absolute_error(y_test, y_pred_gb)
+    
+    # XGBoost MAE
+    mae_xgb = mean_absolute_error(y_test, y_pred_xgb)
+    ```
+
+    Cara kerja: MAE menghitung seberapa besar kesalahan rata-rata prediksi model terhadap data aktual, tanpa mempertimbangkan arah kesalahan.
+
+2. **`Root Mean Squared Error (RMSE)`**: RMSE mengukur akar dari rata-rata kuadrat selisih antara nilai aktual dan prediksi.
+
+     <img src="https://latex.codecogs.com/svg.image?\dpi{120}&space;\bg{transparent}&space;\color{White}&space;\text{RMSE}&space;=&space;\sqrt{&space;\frac{1}{n}&space;\sum_{i=1}^{n}&space;(y_i&space;-&space;\hat{y}_i)^2&space;}">
+        
+      RMSE lebih sensitif terhadap _outlier_ dibanding MAE karena kesalahan dikuadratkan. Nilai lebih kecil menunjukkan prediksi lebih akurat secara keseluruhan. Oleh karena itu, RMSE sangat berguna untuk mendeteksi model yang sensitif terhadap _outlier_.
+      ```python
+      # Random Forest RMSE
+    rmse_rf = np.sqrt(mean_squared_error(y_test, y_pred_rf))
+    
+    # Gradient Boosting RMSE
+    rmse_gb = np.sqrt(mean_squared_error(y_test, y_pred_gb))
+    
+    # XGBoost RMSE
+    rmse_xgb = np.sqrt(mean_squared_error(y_test, y_pred_xgb))
+
+      ```
+                
+      Cara kerja: RMSE menghitung rata-rata kuadrat dari kesalahan prediksi, kemudian diakarkan untuk mendapatkan satuan yang sama dengan target. Semakin besar kesalahan, semakin tinggi nilainya.
+
+3. **`R² Score (Coefficient of Determination)`**: R² mengukur seberapa besar variansi dari data target yang dapat dijelaskan oleh model.
+
+     <img src="https://latex.codecogs.com/svg.image?\dpi{120}&space;\bg{transparent}&space;\color{White}&space;R^2&space;=&space;1&space;-&space;\frac{&space;\sum_{i=1}^{n}&space;(y_i&space;-&space;\hat{y}_i)^2&space;}{&space;\sum_{i=1}^{n}&space;(y_i&space;-&space;\bar{y})^2&space;}" alt="R Squared Equation">
+
+     Nilai R² berkisar antara 0 hingga 1, di mana nilai yang lebih tinggi menunjukkan bahwa model mampu menjelaskan variabilitas data target dengan lebih baik. Jika R² mendekati 1, berarti model hampir sepenuhnya mampu menjelaskan variasi dalam data.
+        
+    ```python
+        # Random Forest R² Score
+    r2_rf = r2_score(y_test, y_pred_rf)
+    
+    # Gradient Boosting R² Score
+    r2_gb = r2_score(y_test, y_pred_gb)
+    
+    # XGBoost R² Score
+    r2_xgb = r2_score(y_test, y_pred_xgb)
+
+     ```
+    Cara kerja: R² membandingkan antara total kesalahan model dengan kesalahan baseline (rata-rata nilai aktual). Nilai 1 berarti prediksi sempurna, 0 berarti tidak lebih baik dari sekadar menebak rata-rata.
+
+### Evaluasi model akhir dengan menggunakan _dataset test_
+
+1. **`Random Forest Regressor`**
+    | Model                   | MAE    | RMSE   | R² Score |
+    |-------------------------|--------|--------|----------|
+    | Random Forest Regressor | 0.2024 | 0.2532 | 0.9549   |
+        Model Random Forest menunjukkan performa yang sangat baik pada data test, dengan nilai R² mendekati 1 yang menandakan bahwa model mampu menjelaskan 95.49% variasi dari data target. Nilai MAE sebesar 0.2024 berarti bahwa, secara rata-rata, prediksi model berbeda sekitar 0.2 poin dari nilai aktual. Nilai RMSE sebesar 0.2532 menunjukkan rata-rata jarak prediksi model terhadap nilai aktual, dengan penekanan pada kesalahan besar.
+
+![image](https://github.com/user-attachments/assets/2eb1b2f4-773f-4ea2-a758-1a5b94675f1c)
+
+    
+    Grafik ini menunjukkan hubungan antara nilai aktual dan prediksi model. Titik-titik yang mendekati garis merah putus-putus (garis identitas) menandakan bahwa prediksi model cukup akurat.
+    
+    ![ResidualPlot_RF](./assets/rr_rf.png)
+    
+    Plot residual menampilkan sebaran kesalahan prediksi terhadap nilai prediksi. Residual tersebar secara acak di sekitar nol, menandakan bahwa model tidak memiliki pola sistematik yang menunjukkan bias.
+    
+    ![ResidualDistribution_RF](./assets/rd_rf.png)
+    
+    Histogram residual mendekati distribusi normal simetris dengan rata-rata mendekati nol. Ini menunjukkan bahwa kesalahan prediksi model bersifat acak dan tidak terdistribusi secara berat sebelah.
+
+2. **`XGBoost Regressor`**
+
+    | Model                    | MAE  |  RMSE | R² Score |
+    |--------------------------|------|-------|----------|
+    | XGBoost Regressor  |0.0628|0.0788 |0.9956    |
+
+    Dengan MAE sebesar 0.0628, model XGBoost hanya memiliki rata-rata deviasi sekitar 0.06 poin dari nilai sebenarnya. Ini menandakan bahwa prediksi cukup konsisten dan tidak terlalu meleset. RMSE sebesar 0.0788 juga menunjukkan bahwa model XGBoost memiliki kesalahan prediksi yang rendah dan stabil. Dengan skor R² sebesar 0.9956, model XGBoost mampu menjelaskan 99.56% variasi dalam data. Hal ini menandakan bahwa model sangat baik dalam merepresentasikan hubungan antara fitur dan target.
+    
+    ![ActualVSPredicted_XG](./assets/ap_xg.png)
+    
+    Grafik ini memperlihatkan korelasi antara nilai aktual dan hasil prediksi model. Sebagian besar titik berada sangat dekat dengan garis identitas, menandakan bahwa prediksi XGBoost sangat akurat dan lebih mendekati nilai sebenarnya dibanding model Random Forest.
+    
+    ![ResidualPlot_XG](./assets/rr_xg.png)
+    
+    Sebaran residual XGBoost menunjukkan pola yang acak dan simetris di sekitar garis nol. Tidak terdapat tren atau pola tertentu, yang mengindikasikan bahwa model ini memiliki kesalahan prediksi yang konsisten tanpa bias sistematis, lebih stabil dibanding Random Forest yang menunjukkan sedikit penyebaran residual lebih luas.
+    
+    ![ResidualDistribution_XG](./assets/rd_xg.png)
+    
+    Histogram residual dari model XGBoost menunjukkan bentuk distribusi yang sangat mendekati distribusi normal, dengan puncak di sekitar nol. Hal ini memperkuat bukti bahwa kesalahan prediksi model bersifat acak dan tidak condong ke satu sisi, serta lebih terkonsentrasi dibanding model Random Forest, yang distribusinya sedikit lebih tersebar.
+
+3. **`LightGBM Regressor`**
+   
+    | Model                    | MAE  |  RMSE | R² Score |
+    |--------------------------|------|-------|----------|
+    | LightGBM  |0.0582|0.0732 |0.9962    |
+
+    MAE yang sangat rendah menunjukkan bahwa rata-rata selisih antara nilai prediksi dan aktual sangat kecil, menandakan model cukup presisi. RMSE lebih sensitif terhadap kesalahan besar, dan nilai yang rendah memperkuat bahwa model jarang membuat kesalahan besar dalam prediksi. R² Score mendekati 1, menandakan bahwa hampir seluruh variasi dalam data target berhasil dijelaskan oleh model, bahkan lebih baik daripada XGBoost maupun Random Forest.
+     
+    ![ActualVSPredicted_LG](./assets/ap_lg.png)
+    
+    Sebagian besar titik berada sangat rapat mengikuti garis identitas, menunjukkan bahwa prediksi LightGBM hampir sempurna. Akurasi prediksinya lebih tinggi dibandingkan model lain yang diuji.
+    
+    ![ResidualPlot_LG](./assets/rr_lg.png)
+    
+    Residual tersebar secara acak di sekitar nol tanpa pola tertentu. Hal ini menunjukkan bahwa kesalahan prediksi bersifat acak dan tidak mengindikasikan bias sistematis yang mana menandakan model generalisasi dengan baik.
+    
+    ![ResidualDistribution_LG](./assets/rd_lg.png)
+    
+    Histogram residual menunjukkan bentuk distribusi yang sangat simetris dan mengerucut di sekitar nol. Hal ini mengindikasikan bahwa kesalahan model sangat kecil dan tersebar secara seimbang.
+
+
 Pada bagian ini anda perlu menyebutkan metrik evaluasi yang digunakan. Lalu anda perlu menjelaskan hasil proyek berdasarkan metrik evaluasi yang digunakan.
 
 Sebagai contoh, Anda memiih kasus klasifikasi dan menggunakan metrik **akurasi, precision, recall, dan F1 score**. Jelaskan mengenai beberapa hal berikut:
