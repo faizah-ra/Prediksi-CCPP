@@ -318,6 +318,7 @@ Setelah proses pelatihan model selesai, tahap selanjutnya adalah melakukan evalu
 ### Evaluasi model akhir dengan menggunakan _dataset test_
 
 1. **`Random Forest Regressor`**
+   
 | Model                    | MAE      | RMSE     | R²       |
 |--------------------------|----------|----------|----------|
 | Random Forest (Tuned)    | 2.2907   | 3.3162   | 0.9626   |
@@ -343,6 +344,7 @@ Secara keseluruhan, model ini cukup andal dalam memprediksi nilai target, meskip
     Histogram residual mendekati distribusi normal simetris dengan rata-rata mendekati nol. Ini menunjukkan bahwa kesalahan prediksi model bersifat acak dan tidak terdistribusi secara berat sebelah.
 
 2. **`Gradient Boosting`**
+   
 | Model                    | MAE      | RMSE     | R²       |
 |------------------------- | -------- | -------- | -------- |
 | Gradient Boosting (Tuned)| 2.205147 | 3.192256 | 0.965326 |
@@ -367,6 +369,7 @@ Secara keseluruhan, Gradient Boosting memberikan performa yang sangat baik dan m
     Histogram residual dari model XGBoost menunjukkan bentuk distribusi yang sangat mendekati distribusi normal, dengan puncak di sekitar nol. Hal ini memperkuat bukti bahwa kesalahan prediksi model bersifat acak dan tidak condong ke satu sisi, serta lebih terkonsentrasi dibanding model Random Forest, yang distribusinya sedikit lebih tersebar.
 
 3. **`XGBoost Regressor`**
+   
 | Model                    | MAE      | RMSE     | R²       |
 |------------------------- | -------- | -------- | -------- |
 | XGBoost (Tuned)          | 2.217422 | 3.217562 | 0.964774 |
