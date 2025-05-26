@@ -1,4 +1,4 @@
-# Laporan Proyek Machine Learning - Nama Anda
+# Laporan Proyek Machine Learning - Faizah Rizki Auliawati
 
 ## Domain Proyek
 Pembangkit listrik adalah tulang punggung pertumbuhan ekonomi modern sekaligus penyumbang besar emisi karbon: sektor ini bertanggung jawab atas hampir 40 % total CO₂ global [IEA, 2024](https://www.iea.org/data-and-statistics?country=WORLD&fuel=Energy%20supply&indicator=Electricity%20generation). Oleh karena itu, meningkatkan efisiensi pembangkit listrik menjadi langkah penting dalam upaya mitigasi perubahan iklim dan pencapaian target net-zero emisi [IEA, 2024](https://www.iea.org/data-and-statistics?country=WORLD&fuel=Energy%20supply&indicator=Electricity%20generation).
@@ -218,7 +218,7 @@ Pada tahap ini, dilakukan inisialisasi dan pelatihan dua model regresi yaitu Lin
       - GradientBoostingRegressor adalah model ensemble berbasis decision tree yang menggabungkan beberapa pohon secara bertahap untuk memperbaiki kesalahan prediksi.
       - Parameter n_estimators, learning_rate, dan max_depth telah disesuaikan (tuning) untuk mendapatkan performa terbaik.
    
-    - XGBoost
+  - XGBoost
       ```
       # Initialize the model
       xgb_model = XGBRegressor(n_estimators=200, learning_rate=0.1, max_depth=6, random_state=42, objective='reg:squarederror')
@@ -240,6 +240,7 @@ Evaluasi model dilakukan dengan menggunakan metrik MAE, RMSE, dan R² Score pada
 | XGBoost          | 2.3495   | 3.3274    | 0.9623  | 1.5999    | 2.1658     | 0.9838   |
 
 3. ```Analisis dan Pemilihan Model Terbaik```
+   
 Berdasarkan evaluasi awal, XGBoost Regressor dipilih sebagai model terbaik karena menunjukkan performa paling unggul dengan nilai MAE dan RMSE terendah serta nilai R² tertinggi (0.9623). Ini berarti XGBoost mampu memberikan prediksi yang lebih akurat dan menjelaskan variansi data dengan baik dibandingkan model Random Forest dan Gradient Boosting standar. Selain itu, XGBoost memiliki fitur regularisasi dan efisiensi komputasi yang memungkinkan pengembangan model lebih optimal melalui proses tuning hyperparameter.
 Untuk meningkatkan performa model lebih jauh, dilakukan tuning hyperparameter menggunakan metode RandomizedSearchCV pada kedua model Gradient Boosting dan XGBoost. Proses ini bertujuan menemukan kombinasi parameter terbaik yang meminimalkan kesalahan prediksi.
 
