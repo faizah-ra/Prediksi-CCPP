@@ -63,7 +63,8 @@ Variabel target yaitu PE (Energy Output) juga menunjukkan pola bimodal, menandak
 Secara keseluruhan, keberagaman pola distribusi antar fitur ini menunjukkan bahwa dataset memiliki kompleksitas yang cukup tinggi. Hal ini memberikan peluang untuk eksplorasi teknik transformasi data yang tepat guna meningkatkan performa model prediktif yang akan dibangun.
 
 ### Visualisasi Beberapa Boxplot dalam Grid Subplot
-![image](https://github.com/user-attachments/assets/508db635-2c0e-43c4-b448-97d2049ffe15)
+![image](https://github.com/user-attachments/assets/4a3cb500-88b0-4b79-aea5-975f213f2495)
+
 
 
 Distribusi variabel numerik melalui boxplot memberikan wawasan penting tentang persebaran nilai dan potensi keberadaan outlier pada setiap fitur.
@@ -245,11 +246,13 @@ Untuk meningkatkan performa model lebih jauh, dilakukan tuning hyperparameter me
 - Gradient Boosting mendapatkan parameter terbaik seperti n_estimators=300, max_depth=7, dan learning_rate=0.1 dengan hasil evaluasi setelah tuning menunjukkan peningkatan: MAE turun menjadi 2.2051, RMSE menjadi 3.1923, dan R² naik ke 0.9653.
 
 - XGBoost juga melakukan tuning dengan parameter seperti n_estimators=500, max_depth=7, learning_rate=0.05, dan regularisasi reg_alpha serta reg_lambda. Hasilnya MAE menjadi 2.2174, RMSE 3.2176, dan R² 0.9648, juga menunjukkan perbaikan signifikan dari model awal.
+  
 | Model                    | MAE      | RMSE     | R²       |
 |------------------------- | -------- | -------- | -------- |
 | Random Forest (Tuned)    | 2.290675 | 3.316191 | 0.962581 |
 | Gradient Boosting (Tuned)| 2.205147 | 3.192256 | 0.965326 |
 | XGBoost (Tuned)          | 2.217422 | 3.217562 | 0.964774 |
+
 Gradient Boosting dipilih sebagai model terbaik setelah tuning karena performanya menunjukkan peningkatan yang paling signifikan dengan nilai MAE dan RMSE terendah serta R² tertinggi. Hal ini menandakan model ini mampu menangkap pola dan variansi data dengan sangat baik, menghasilkan prediksi yang lebih akurat dan konsisten. Proses tuning berhasil menemukan kombinasi hyperparameter yang optimal sehingga model tidak hanya lebih tepat tetapi juga lebih stabil dalam memprediksi data baru.
 
 Sementara itu, meskipun XGBoost sebelum tuning tampil sangat kuat, setelah proses tuning performanya sedikit menurun dibandingkan hasil awal dan juga sedikit kalah dibanding Gradient Boosting yang sudah dituning. Penurunan ini bisa terjadi karena kombinasi hyperparameter yang dipilih oleh RandomizedSearchCV mungkin kurang ideal untuk dataset ini, sehingga model mengalami sedikit overfitting atau underfitting. Selain itu, XGBoost memiliki banyak hyperparameter kompleks yang perlu penyesuaian sangat tepat, dan jika tuning tidak optimal, performanya bisa sedikit menurun dibandingkan konfigurasi awal yang sederhana namun efektif.
@@ -323,25 +326,24 @@ Setelah proses pelatihan model selesai, tahap selanjutnya adalah melakukan evalu
 |--------------------------|----------|----------|----------|
 | Random Forest (Tuned)    | 2.2907   | 3.3162   | 0.9626   |
 
-Model Random Forest (Tuned) menunjukkan performa yang sangat baik pada data *test*, dengan nilai R² sebesar **0.9626** yang menandakan bahwa model mampu menjelaskan sekitar **96.26%** variasi dalam data target. Nilai **MAE sebesar 2.2907** menunjukkan bahwa, secara rata-rata, prediksi model memiliki selisih sekitar 2.29 poin dari nilai aktual. Sementara itu, **RMSE sebesar 3.3162** mengindikasikan bahwa model memiliki kesalahan prediksi rata-rata sekitar 3.31 poin, dengan penekanan lebih besar terhadap kesalahan yang ekstrem.
-
-Secara keseluruhan, model ini cukup andal dalam memprediksi nilai target, meskipun masih terdapat beberapa deviasi pada beberapa titik data.
+    Model Random Forest (Tuned) menunjukkan performa yang sangat baik pada data *test*, dengan nilai R² sebesar **0.9626** yang menandakan bahwa model mampu menjelaskan sekitar **96.26%** variasi dalam data target. Nilai **MAE sebesar 2.2907** menunjukkan bahwa, secara rata-rata, prediksi model memiliki selisih sekitar 2.29 poin dari nilai aktual. Sementara itu, **RMSE sebesar 3.3162** mengindikasikan bahwa model memiliki kesalahan prediksi rata-rata sekitar 3.31 poin, dengan penekanan lebih besar terhadap kesalahan yang ekstrem.
+    Secara keseluruhan, model ini cukup andal dalam memprediksi nilai target, meskipun masih terdapat beberapa deviasi pada beberapa titik data.
 
 
 ![image](https://github.com/user-attachments/assets/2eb1b2f4-773f-4ea2-a758-1a5b94675f1c)
 
-    
-    Grafik ini menunjukkan hubungan antara nilai aktual dan prediksi model. Titik-titik yang mendekati garis merah putus-putus (garis identitas) menandakan bahwa prediksi model cukup akurat.
+    Grafik ini menunjukkan hubungan antara nilai aktual dan prediksi model Random Forest. Titik-titik banyak tersebar dekat dengan garis merah putus-putus (garis identitas), menandakan bahwa prediksi model cukup akurat dengan deviasi kecil.
+
     
  ![image](https://github.com/user-attachments/assets/18a8180f-e1ae-452f-ac36-46848c4bcf06)
 
     
-    Plot residual menampilkan sebaran kesalahan prediksi terhadap nilai prediksi. Residual tersebar secara acak di sekitar nol, menandakan bahwa model tidak memiliki pola sistematik yang menunjukkan bias.
+    Plot residual menampilkan sebaran kesalahan prediksi terhadap nilai prediksi. Titik-titik residual tersebar acak di sekitar garis nol tanpa pola tertentu, menunjukkan bahwa model tidak memiliki bias sistematis.
     
 ![image](https://github.com/user-attachments/assets/2ed9b85b-2d26-4f28-9dbf-e365e2747088)
 
     
-    Histogram residual mendekati distribusi normal simetris dengan rata-rata mendekati nol. Ini menunjukkan bahwa kesalahan prediksi model bersifat acak dan tidak terdistribusi secara berat sebelah.
+    Histogram residual menunjukkan bentuk distribusi yang mendekati normal dan simetris, dengan puncak di sekitar nol. Ini menunjukkan bahwa sebagian besar kesalahan prediksi model bersifat kecil dan acak.
 
 2. **`Gradient Boosting`**
    
@@ -356,17 +358,17 @@ Secara keseluruhan, Gradient Boosting memberikan performa yang sangat baik dan m
  ![image](https://github.com/user-attachments/assets/7fe8d97d-010c-4a50-98ee-3851f8658538)
 
     
-    Grafik ini memperlihatkan korelasi antara nilai aktual dan hasil prediksi model. Sebagian besar titik berada sangat dekat dengan garis identitas, menandakan bahwa prediksi XGBoost sangat akurat dan lebih mendekati nilai sebenarnya dibanding model Random Forest.
-    
+    Grafik ini memperlihatkan korelasi antara nilai aktual dan hasil prediksi model Gradient Boosting. Sebagian besar titik berada sangat dekat dengan garis identitas, menandakan bahwa prediksi model sangat akurat dan mendekati nilai sebenarnya. Jika dibandingkan dengan model lain seperti Random Forest, prediksi Gradient Boosting tampak lebih konsisten dan presisi.
+
 ![image](https://github.com/user-attachments/assets/4c01c085-0f2d-413e-ae77-c71802e32531)
 
-    
-    Sebaran residual XGBoost menunjukkan pola yang acak dan simetris di sekitar garis nol. Tidak terdapat tren atau pola tertentu, yang mengindikasikan bahwa model ini memiliki kesalahan prediksi yang konsisten tanpa bias sistematis, lebih stabil dibanding Random Forest yang menunjukkan sedikit penyebaran residual lebih luas.
+    Sebaran residual dari model Gradient Boosting menunjukkan pola yang acak dan simetris di sekitar garis nol. Tidak terdapat tren atau pola tertentu, mengindikasikan bahwa kesalahan prediksi bersifat stabil dan tidak bias. Jika dibandingkan dengan model lain, Gradient Boosting menunjukkan kestabilan yang lebih tinggi dengan penyebaran residual yang lebih terkontrol.
     
 ![image](https://github.com/user-attachments/assets/b75e088b-f49a-4e06-b1f4-0f4ec6428fa4)
 
     
-    Histogram residual dari model XGBoost menunjukkan bentuk distribusi yang sangat mendekati distribusi normal, dengan puncak di sekitar nol. Hal ini memperkuat bukti bahwa kesalahan prediksi model bersifat acak dan tidak condong ke satu sisi, serta lebih terkonsentrasi dibanding model Random Forest, yang distribusinya sedikit lebih tersebar.
+    Histogram residual dari model Gradient Boosting menunjukkan bentuk distribusi yang mendekati distribusi normal, dengan puncak di sekitar nol. Hal ini memperkuat bukti bahwa kesalahan prediksi model bersifat acak dan tidak condong ke satu sisi. Jika dibandingkan dengan model lain, distribusi residual Gradient Boosting terlihat lebih terkonsentrasi dan simetris.
+
 
 3. **`XGBoost Regressor`**
    
@@ -381,36 +383,29 @@ Secara keseluruhan, performa XGBoost hampir setara dengan Gradient Boosting dan 
 ![image](https://github.com/user-attachments/assets/eff7265d-97a9-4a93-b133-4b0e9e656b93)
 
     
-    Sebagian besar titik berada sangat rapat mengikuti garis identitas, menunjukkan bahwa prediksi LightGBM hampir sempurna. Akurasi prediksinya lebih tinggi dibandingkan model lain yang diuji.
+    Grafik ini menunjukkan hubungan antara nilai aktual dan hasil prediksi model XGBoost yang telah dituning. Titik-titik data tersebar rapat di sepanjang garis identitas (garis merah putus-putus), menandakan bahwa prediksi model sangat mendekati nilai sebenarnya. Hal ini menunjukkan performa prediksi yang sangat baik, dengan galat yang relatif kecil dan distribusi prediksi yang konsisten di seluruh rentang nilai.
     
 ![image](https://github.com/user-attachments/assets/695df019-10d3-4fc9-9365-49b720f1121e)
 
     
-    Residual tersebar secara acak di sekitar nol tanpa pola tertentu. Hal ini menunjukkan bahwa kesalahan prediksi bersifat acak dan tidak mengindikasikan bias sistematis yang mana menandakan model generalisasi dengan baik.
+    Sebaran residual terhadap nilai prediksi terlihat acak dan simetris di sekitar garis nol. Tidak tampak adanya pola sistematis seperti tren menaik/menurun, yang berarti kesalahan prediksi bersifat tidak bias (unbiased). Ini menandakan bahwa model tidak overfitting maupun underfitting terhadap data, serta kesalahan tersebar merata di seluruh rentang nilai prediksi.
     
 ![image](https://github.com/user-attachments/assets/4fb11825-81d8-443f-977d-8f45ae457f03)
 
     
-    Histogram residual menunjukkan bentuk distribusi yang sangat simetris dan mengerucut di sekitar nol. Hal ini mengindikasikan bahwa kesalahan model sangat kecil dan tersebar secara seimbang.
+    Histogram residual menunjukkan bentuk distribusi yang menyerupai distribusi normal dengan puncak di sekitar nol. Ini mengindikasikan bahwa sebagian besar prediksi model memiliki kesalahan kecil, dan hanya sedikit outlier. Distribusi ini memperkuat asumsi bahwa model memiliki stabilitas dan akurasi yang baik, dengan galat yang cenderung acak.
 
+## Conclusion
 ![image](https://github.com/user-attachments/assets/ccdadb7e-9796-4f35-b30b-59d1341814a6)
 ![image](https://github.com/user-attachments/assets/3efb673b-54a9-4bf1-82a5-38aeb0c13b7f)
+Dalam proyek ini, dilakukan serangkaian tahapan mulai dari pemahaman data (data understanding), praproses data (data preprocessing), pemilihan fitur (feature selection), hingga pelatihan dan evaluasi model menggunakan tiga algoritma machine learning regresi terkemuka: Random Forest Regressor, Gradient Boosting Regressor, dan XGBoost Regressor. Tujuan utama dari proyek ini adalah membangun model prediktif yang akurat untuk memperkirakan nilai target berdasarkan fitur input yang tersedia.
 
+Evaluasi performa model dilakukan menggunakan tiga metrik utama, yaitu MAE (Mean Absolute Error), RMSE (Root Mean Squared Error), dan R² Score. Hasil evaluasi menunjukkan bahwa:
 
-Pada bagian ini anda perlu menyebutkan metrik evaluasi yang digunakan. Lalu anda perlu menjelaskan hasil proyek berdasarkan metrik evaluasi yang digunakan.
+- Gradient Boosting Regressor (Tuned) mencatat performa terbaik dengan nilai MAE terendah sebesar 2.2051, RMSE sebesar 3.1923, dan R² sebesar 0.9653. Hal ini menunjukkan bahwa model mampu meminimalkan galat prediksi dengan stabilitas tinggi serta menangkap variasi data target dengan akurasi lebih dari 96.5%. Visualisasi residual juga menunjukkan distribusi yang simetris dan tidak bias.
 
-Sebagai contoh, Anda memiih kasus klasifikasi dan menggunakan metrik **akurasi, precision, recall, dan F1 score**. Jelaskan mengenai beberapa hal berikut:
-- Penjelasan mengenai metrik yang digunakan
-- Menjelaskan hasil proyek berdasarkan metrik evaluasi
+- XGBoost Regressor (Tuned) menempati posisi kedua dengan MAE sebesar 2.2174, RMSE sebesar 3.2176, dan R² sebesar 0.9648. Performa model ini hampir setara dengan Gradient Boosting, dengan kelebihan dalam kestabilan prediksi serta distribusi residual yang tidak menunjukkan pola sistematis.
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+- Random Forest Regressor (Tuned) juga menunjukkan performa sangat baik dengan R² sebesar 0.9626, MAE sebesar 2.2907, dan RMSE sebesar 3.3162. Meskipun berada sedikit di bawah dua model lainnya dari sisi metrik, model ini tetap akurat dan andal, dengan distribusi residual yang acak dan tidak menunjukkan bias yang berarti.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
-
-**---Ini adalah bagian akhir laporan---**
-
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
-
+Berdasarkan hasil evaluasi metrik dan analisis visual residual dari ketiga model, Gradient Boosting Regressor dipilih sebagai model terbaik dalam studi ini. Model ini tidak hanya memberikan akurasi tertinggi, tetapi juga menunjukkan stabilitas prediksi yang baik, distribusi error yang sehat, serta generalisasi yang optimal terhadap data uji. Oleh karena itu, Gradient Boosting direkomendasikan untuk digunakan dalam implementasi prediksi pada domain permasalahan ini.
