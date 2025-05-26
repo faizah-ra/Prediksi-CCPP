@@ -318,10 +318,14 @@ Setelah proses pelatihan model selesai, tahap selanjutnya adalah melakukan evalu
 ### Evaluasi model akhir dengan menggunakan _dataset test_
 
 1. **`Random Forest Regressor`**
-    | Model                   | MAE    | RMSE   | R² Score |
-    |-------------------------|--------|--------|----------|
-    | Random Forest Regressor | 0.2024 | 0.2532 | 0.9549   |
-        Model Random Forest menunjukkan performa yang sangat baik pada data test, dengan nilai R² mendekati 1 yang menandakan bahwa model mampu menjelaskan 95.49% variasi dari data target. Nilai MAE sebesar 0.2024 berarti bahwa, secara rata-rata, prediksi model berbeda sekitar 0.2 poin dari nilai aktual. Nilai RMSE sebesar 0.2532 menunjukkan rata-rata jarak prediksi model terhadap nilai aktual, dengan penekanan pada kesalahan besar.
+| Model                    | MAE      | RMSE     | R²       |
+|--------------------------|----------|----------|----------|
+| Random Forest (Tuned)    | 2.2907   | 3.3162   | 0.9626   |
+
+Model Random Forest (Tuned) menunjukkan performa yang sangat baik pada data *test*, dengan nilai R² sebesar **0.9626** yang menandakan bahwa model mampu menjelaskan sekitar **96.26%** variasi dalam data target. Nilai **MAE sebesar 2.2907** menunjukkan bahwa, secara rata-rata, prediksi model memiliki selisih sekitar 2.29 poin dari nilai aktual. Sementara itu, **RMSE sebesar 3.3162** mengindikasikan bahwa model memiliki kesalahan prediksi rata-rata sekitar 3.31 poin, dengan penekanan lebih besar terhadap kesalahan yang ekstrem.
+
+Secara keseluruhan, model ini cukup andal dalam memprediksi nilai target, meskipun masih terdapat beberapa deviasi pada beberapa titik data.
+
 
 ![image](https://github.com/user-attachments/assets/2eb1b2f4-773f-4ea2-a758-1a5b94675f1c)
 
@@ -338,13 +342,14 @@ Setelah proses pelatihan model selesai, tahap selanjutnya adalah melakukan evalu
     
     Histogram residual mendekati distribusi normal simetris dengan rata-rata mendekati nol. Ini menunjukkan bahwa kesalahan prediksi model bersifat acak dan tidak terdistribusi secara berat sebelah.
 
-2. **`XGBoost Regressor`**
+2. **`Gradient Boosting`**
+| Model                    | MAE      | RMSE     | R²       |
+|------------------------- | -------- | -------- | -------- |
+| Gradient Boosting (Tuned)| 2.205147 | 3.192256 | 0.965326 |
 
-    | Model                    | MAE  |  RMSE | R² Score |
-    |--------------------------|------|-------|----------|
-    | XGBoost Regressor  |0.0628|0.0788 |0.9956    |
+Model Gradient Boosting (Tuned) menunjukkan performa prediksi yang sangat baik dengan **R² sebesar 0.9653**, yang berarti model mampu menjelaskan sekitar **96.53%** variasi dalam data target. Nilai **MAE sebesar 2.2051** menunjukkan bahwa secara rata-rata prediksi model berbeda sekitar 2.21 poin dari nilai aktual. Sementara itu, **RMSE sebesar 3.1923** menunjukkan bahwa kesalahan prediksi model tetap rendah dan relatif stabil, meskipun masih ada beberapa titik data dengan deviasi yang lebih besar.
 
-    Dengan MAE sebesar 0.0628, model XGBoost hanya memiliki rata-rata deviasi sekitar 0.06 poin dari nilai sebenarnya. Ini menandakan bahwa prediksi cukup konsisten dan tidak terlalu meleset. RMSE sebesar 0.0788 juga menunjukkan bahwa model XGBoost memiliki kesalahan prediksi yang rendah dan stabil. Dengan skor R² sebesar 0.9956, model XGBoost mampu menjelaskan 99.56% variasi dalam data. Hal ini menandakan bahwa model sangat baik dalam merepresentasikan hubungan antara fitur dan target.
+Secara keseluruhan, Gradient Boosting memberikan performa yang sangat baik dan mampu menangkap pola hubungan antara fitur dan target dengan akurasi tinggi, bahkan sedikit lebih baik dibanding Random Forest pada metrik yang sama.
     
  ![image](https://github.com/user-attachments/assets/7fe8d97d-010c-4a50-98ee-3851f8658538)
 
@@ -361,13 +366,14 @@ Setelah proses pelatihan model selesai, tahap selanjutnya adalah melakukan evalu
     
     Histogram residual dari model XGBoost menunjukkan bentuk distribusi yang sangat mendekati distribusi normal, dengan puncak di sekitar nol. Hal ini memperkuat bukti bahwa kesalahan prediksi model bersifat acak dan tidak condong ke satu sisi, serta lebih terkonsentrasi dibanding model Random Forest, yang distribusinya sedikit lebih tersebar.
 
-3. **`LightGBM Regressor`**
-   
-    | Model                    | MAE  |  RMSE | R² Score |
-    |--------------------------|------|-------|----------|
-    | LightGBM  |0.0582|0.0732 |0.9962    |
+3. **`XGBoost Regressor`**
+| Model                    | MAE      | RMSE     | R²       |
+|------------------------- | -------- | -------- | -------- |
+| XGBoost (Tuned)          | 2.217422 | 3.217562 | 0.964774 |
 
-    MAE yang sangat rendah menunjukkan bahwa rata-rata selisih antara nilai prediksi dan aktual sangat kecil, menandakan model cukup presisi. RMSE lebih sensitif terhadap kesalahan besar, dan nilai yang rendah memperkuat bahwa model jarang membuat kesalahan besar dalam prediksi. R² Score mendekati 1, menandakan bahwa hampir seluruh variasi dalam data target berhasil dijelaskan oleh model, bahkan lebih baik daripada XGBoost maupun Random Forest.
+Model XGBoost yang telah dituning menunjukkan performa yang sangat baik dengan nilai **R² sebesar 0.9648**, artinya model mampu menjelaskan sekitar **96.48%** variasi dari data target. Nilai **MAE sebesar 2.2174** menunjukkan bahwa secara rata-rata, prediksi model meleset sekitar 2.22 poin dari nilai aktual. Sementara itu, **RMSE sebesar 3.2176** mengindikasikan bahwa prediksi model cukup stabil, meskipun tetap memperhatikan adanya kesalahan besar yang mungkin terjadi.
+
+Secara keseluruhan, performa XGBoost hampir setara dengan Gradient Boosting dan Random Forest. Meskipun secara metrik sedikit di bawah Gradient Boosting, model ini tetap memberikan hasil yang sangat kompetitif dan presisi yang tinggi dalam menangkap hubungan antara fitur dan target.
      
 ![image](https://github.com/user-attachments/assets/eff7265d-97a9-4a93-b133-4b0e9e656b93)
 
