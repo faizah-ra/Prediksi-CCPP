@@ -203,8 +203,16 @@ Pada tahap ini, dilakukan inisialisasi dan pelatihan dua model regresi yaitu Lin
       ```
     
      Penjelasan:
-      - Baris pertama menginisialisasi model Random Forest dengan 200 pohon keputusan (n_estimators=200), kedalaman maksimal pohon 6 (max_depth=6), dan menetapkan random_state=42 untuk menghasilkan hasil yang konsisten saat pelatihan diulang.
-      - Baris kedua menjalankan proses pelatihan model (fit) menggunakan data fitur X_train dan target y_train, sehingga model belajar mengenali pola hubungan antara input dan output.
+     
+     Model Random Forest dibangun menggunakan parameter sebagai berikut:
+
+      - n_estimators = 200: model terdiri dari 200 pohon keputusan (decision trees) yang masing-masing dilatih pada subset data secara acak. Semakin banyak jumlah pohon, semakin baik model dalam mengurangi variansi.
+      
+      - max_depth = 6: kedalaman maksimum setiap pohon dibatasi hingga 6 untuk menghindari overfitting.
+      
+      - random_state = 42: ditetapkan agar hasil pelatihan dapat direproduksi secara konsisten.
+
+      Model dilatih menggunakan fungsi .fit() pada data pelatihan (X_train dan y_train), sehingga model belajar mengenali pola hubungan antara variabel lingkungan dan output daya listrik.
      
   - Gradient Boosting Regressor 
       ```
@@ -215,9 +223,19 @@ Pada tahap ini, dilakukan inisialisasi dan pelatihan dua model regresi yaitu Lin
     
       ```
       Penjelasan:
-      - GradientBoostingRegressor adalah model ensemble berbasis decision tree yang menggabungkan beberapa pohon secara bertahap untuk memperbaiki kesalahan prediksi.
-      - Parameter n_estimators, learning_rate, dan max_depth telah disesuaikan (tuning) untuk mendapatkan performa terbaik.
-   
+    
+      Model Gradient Boosting diinisialisasi dengan konfigurasi parameter sebagai berikut:
+
+      - n_estimators = 200: model membangun 200 pohon keputusan secara bertahap untuk memperbaiki kesalahan prediksi sebelumnya.
+      
+      - learning_rate = 0.1: setiap pohon baru hanya memberikan kontribusi sebesar 10% dari prediksi keseluruhan, menjaga kestabilan proses pembelajaran.
+      
+      - max_depth = 6: kedalaman maksimum pohon dibatasi agar model tidak terlalu kompleks.
+      
+      - random_state = 42: digunakan untuk memastikan hasil yang konsisten antar pelatihan.
+
+      Model ini dilatih dengan pendekatan boosting, di mana setiap pohon baru difokuskan untuk memperbaiki prediksi yang sebelumnya kurang tepat.
+
   - XGBoost
       ```
       # Initialize the model
@@ -226,12 +244,24 @@ Pada tahap ini, dilakukan inisialisasi dan pelatihan dua model regresi yaitu Lin
       xgb_model.fit(X_train, y_train)
       ```
       Penjelasan:
-      - Baris pertama menginisialisasi model XGBoost untuk regresi dengan 200 pohon (n_estimators=200), laju pembelajaran (learning_rate=0.1), kedalaman maksimal pohon 6 (max_depth=6), dan random_state=42 agar hasil pelatihan konsisten. Parameter objective='reg:squarederror' digunakan untuk menetapkan fungsi kerugian kuadrat yang umum untuk regresi.
-      - Baris kedua melatih model menggunakan data fitur X_train dan target y_train, sehingga model belajar memetakan pola antara input dan output untuk membuat prediksi yang akurat.
+
+      Model XGBoost diinisialisasi menggunakan parameter sebagai berikut:
+      
+      - n_estimators = 200: model membentuk 200 boosting rounds (pohon).
+      
+      - learning_rate = 0.1: mengontrol kontribusi masing-masing pohon agar tidak terlalu agresif.
+      
+      - max_depth = 6: membatasi kompleksitas setiap pohon agar tetap efisien.
+      
+      - random_state = 42: menjaga konsistensi hasil pelatihan.
+      
+      - objective = 'reg:squarederror': menetapkan fungsi objektif regresi dengan squared error sebagai fungsi loss.
+      
+      Model ini menggabungkan kecepatan, efisiensi komputasi, dan akurasi tinggi melalui regularisasi dan pengoptimalan iteratif yang canggih.
         
 2. ```Evaluasi Model:```
 
-Evaluasi model dilakukan dengan menggunakan metrik MAE, RMSE, dan R² Score pada data testing serta data training untuk melihat performa dan potensi overfitting.
+Evaluasi model dengan default parameters, dilakukan dengan menggunakan metrik MAE, RMSE, dan R² Score pada data testing serta data training untuk melihat performa dan potensi overfitting.
 
 | Model            | MAE Test | RMSE Test | R² Test | MAE Train | RMSE Train | R² Train |
 |------------------|----------|-----------|---------|-----------|------------|----------|
@@ -241,41 +271,80 @@ Evaluasi model dilakukan dengan menggunakan metrik MAE, RMSE, dan R² Score pada
 
 3. ```Analisis dan Pemilihan Model Terbaik```
    
-Berdasarkan evaluasi awal, XGBoost Regressor dipilih sebagai model terbaik karena menunjukkan performa paling unggul dengan nilai MAE dan RMSE terendah serta nilai R² tertinggi (0.9623). Ini berarti XGBoost mampu memberikan prediksi yang lebih akurat dan menjelaskan variansi data dengan baik dibandingkan model Random Forest dan Gradient Boosting standar. Selain itu, XGBoost memiliki fitur regularisasi dan efisiensi komputasi yang memungkinkan pengembangan model lebih optimal melalui proses tuning hyperparameter.
-Untuk meningkatkan performa model lebih jauh, dilakukan tuning hyperparameter menggunakan metode RandomizedSearchCV pada kedua model Gradient Boosting dan XGBoost. Proses ini bertujuan menemukan kombinasi parameter terbaik yang meminimalkan kesalahan prediksi.
+Berdasarkan hasil evaluasi awal sebelum tuning, XGBoost Regressor menunjukkan performa paling unggul dibandingkan Random Forest dan Gradient Boosting, dengan nilai MAE dan RMSE terendah serta R² tertinggi (0.9623). Hal ini menunjukkan bahwa model XGBoost mampu memberikan prediksi yang paling akurat dan menjelaskan variansi data dengan baik. Selain itu, XGBoost memiliki fitur regularisasi L1/L2 dan efisiensi komputasi yang sangat baik, menjadikannya kandidat kuat untuk pengembangan lebih lanjut.
 
-- Gradient Boosting mendapatkan parameter terbaik  sebagai berikut:
-  - `n_estimators = 300`: jumlah estimator (pohon) dalam model.
-  - `learning_rate = 0.1`: laju pembelajaran untuk mengurangi kontribusi setiap pohon berturut-turut.
-  - `max_depth = 7`: kedalaman maksimum pohon.
-  - `subsample = 0.9`: proporsi data yang digunakan pada setiap iterasi boosting.
-  - `min_samples_split = 3`: jumlah minimum sampel untuk membagi node.
-  - `min_samples_leaf = 2`: jumlah minimum sampel yang diperlukan di setiap daun.
-    
-  Tuning parameter dilakukan untuk meminimalkan kesalahan prediksi sambil menghindari overfitting, menghasilkan model yang lebih stabil dan akurat.
+Namun, untuk meningkatkan performa semua model secara menyeluruh, dilakukan proses tuning hyperparameter menggunakan metode RandomizedSearchCV pada ketiga model, yaitu Random Forest, Gradient Boosting, dan XGBoost. Tujuan dari tuning ini adalah untuk menemukan kombinasi parameter optimal yang dapat meminimalkan kesalahan prediksi dan meningkatkan generalisasi model.
 
-- XGBoost juga melakukan tuning dengan parameter optimal berikut:
-  - `n_estimators = 500`: jumlah boosting rounds.
-  - `learning_rate = 0.05`: laju pembelajaran yang lebih konservatif.
-  - `max_depth = 7`: kedalaman maksimum setiap pohon.
-  - `subsample = 0.8`: fraksi data pelatihan yang digunakan untuk membangun setiap pohon.
-  - `colsample_bytree = 0.8`: proporsi fitur yang digunakan oleh setiap pohon.
-  - `gamma = 0`: nilai minimum untuk split loss reduction.
-  - `reg_alpha = 0.1`: regularisasi L1.
-  - `reg_lambda = 1`: regularisasi L2.
+- Random Forest Regressor
+  Model Random Forest Regressor juga mengalami peningkatan performa setelah dilakukan tuning menggunakan metode RandomizedSearchCV. Parameter terbaik yang diperoleh dari proses tuning adalah sebagai berikut:
+  
+  - n_estimators = 500: jumlah pohon keputusan (decision trees) yang digunakan dalam ensemble. Semakin banyak pohon, semakin stabil hasil prediksi karena rata-rata dari banyak estimator cenderung mengurangi variansi.
+  
+  - min_samples_split = 2: jumlah minimum sampel yang diperlukan untuk membagi sebuah node. Nilai ini mempertahankan kemampuan model untuk memecah data pada kondisi granular.
+  
+  - min_samples_leaf = 1: jumlah minimum sampel yang harus ada pada setiap daun pohon. Nilai ini memungkinkan model menangani data dengan ketelitian tinggi.
+  
+  - max_features = 'sqrt': model hanya mempertimbangkan akar kuadrat dari jumlah total fitur saat mencari split terbaik. Pendekatan ini memperkenalkan variasi antar pohon dan membantu mengurangi overfitting.
+  
+  - max_depth = None: kedalaman maksimum pohon tidak dibatasi, sehingga pohon dapat tumbuh hingga seluruh daun homogen atau jumlah sampel terlalu sedikit untuk dibagi lebih lanjut.
+  
+  - bootstrap = False: proses pelatihan tidak menggunakan teknik bootstrap sampling. Seluruh data pelatihan digunakan dalam pembangunan setiap pohon, yang dalam beberapa kasus bisa menghasilkan performa lebih tinggi, namun berisiko overfitting.
+  
+  Dengan konfigurasi tersebut, performa model mengalami peningkatan dibanding versi default. Evaluasi setelah tuning menunjukkan penurunan nilai MAE dan RMSE serta peningkatan skor R², yang menunjukkan bahwa model menjadi lebih akurat dalam memprediksi output daya CCPP dan memiliki kemampuan generalisasi yang lebih baik.
 
-  Seluruh parameter ini dipilih untuk mencapai keseimbangan antara kompleksitas model dan generalisasi prediksi.
+- Gradient Boosting
+  
+  Setelah proses tuning hyperparameter menggunakan teknik RandomizedSearchCV, diperoleh konfigurasi terbaik untuk model Gradient Boosting Regressor yang secara signifikan meningkatkan akurasi prediksi. Parameter-parameter terbaik yang digunakan adalah sebagai berikut:
+  
+  - n_estimators = 300, artinya model terdiri dari 300 pohon keputusan (estimators) yang dibangun secara bertahap. Penambahan jumlah pohon ini membantu meningkatkan kompleksitas model secara bertahap.
+  
+  - learning_rate = 0.1, yaitu laju pembelajaran yang mengatur seberapa besar kontribusi setiap pohon dalam proses boosting. Nilai ini dipilih untuk menjaga keseimbangan antara kecepatan konvergensi dan stabilitas model.
+  
+  - max_depth = 7, menetapkan kedalaman maksimum setiap pohon, sehingga model mampu menangkap hubungan kompleks antar variabel tanpa terlalu overfit.
+  
+  - subsample = 0.9, artinya setiap pohon dilatih hanya pada 90% sampel acak dari keseluruhan data, untuk mengurangi korelasi antar pohon dan meningkatkan kemampuan generalisasi model.
+  
+  - min_samples_split = 3, yang merupakan jumlah minimum sampel yang diperlukan untuk memisahkan sebuah node. Nilai ini membantu menghindari pemisahan berlebihan pada data yang sangat kecil.
+  
+  - min_samples_leaf = 2, yaitu jumlah minimum sampel pada setiap daun pohon keputusan. Tujuannya untuk mengurangi kemungkinan overfitting akibat node yang terlalu kecil.
+  
+  Kombinasi parameter tersebut menghasilkan model yang tidak hanya akurat, tetapi juga stabil dan dapat diandalkan untuk digunakan dalam prediksi output daya CCPP pada berbagai kondisi operasional.
 
+- XGBoost
+
+  Model XGBoost Regressor juga mengalami peningkatan performa setelah dilakukan tuning menggunakan pendekatan RandomizedSearchCV. Adapun kombinasi parameter optimal yang ditemukan adalah sebagai berikut:
+
+  - n_estimators = 500, yakni jumlah total iterasi boosting atau jumlah pohon dalam model. Jumlah yang besar memungkinkan model untuk belajar secara lebih menyeluruh.
+  
+  - learning_rate = 0.05, merupakan laju pembelajaran yang lebih kecil dibanding default, bertujuan untuk membuat proses pembelajaran lebih konservatif dan menghindari konvergensi prematur.
+  
+  - max_depth = 7, menetapkan batas maksimal kedalaman pohon, agar model mampu menangkap hubungan non-linear tanpa overfitting.
+  
+  - subsample = 0.8, yaitu proporsi data pelatihan yang digunakan pada setiap iterasi boosting. Ini membantu meningkatkan keberagaman pohon dan mengurangi overfitting.
+  
+  - colsample_bytree = 0.8, menunjukkan bahwa hanya 80% fitur yang digunakan dalam setiap pohon, memberikan variasi struktur antar pohon.
+  
+  - gamma = 0, menyatakan bahwa tidak ada penalti untuk split loss reduction dalam model ini. Hal ini dipilih karena penambahan penalti tidak menunjukkan perbaikan performa signifikan dalam tuning.
+  
+  - reg_alpha = 0.1, adalah nilai regularisasi L1 (Lasso) yang digunakan untuk mengurangi kompleksitas model dengan mendorong sparsity pada fitur.
+
+  - reg_lambda = 1, adalah regularisasi L2 (Ridge) yang membantu menghindari overfitting dengan penalti terhadap bobot yang besar.
+  
+  Kombinasi parameter tersebut memberikan keseimbangan yang optimal antara kompleksitas model, kemampuan generalisasi, dan efisiensi komputasi, menjadikan XGBoost sebagai salah satu kandidat kuat dalam pemodelan prediksi output daya listrik pada proyek ini.
   
 | Model                    | MAE      | RMSE     | R²       |
 |------------------------- | -------- | -------- | -------- |
-| Random Forest (Tuned)    | 2.290675 | 3.316191 | 0.962581 |
+| Random Forest (Tuned)    | 2.2907   | 3.3162   | 0.9626   |
 | Gradient Boosting (Tuned)| 2.205147 | 3.192256 | 0.965326 |
 | XGBoost (Tuned)          | 2.217422 | 3.217562 | 0.964774 |
 
-Gradient Boosting dipilih sebagai model terbaik setelah tuning karena performanya menunjukkan peningkatan yang paling signifikan dengan nilai MAE dan RMSE terendah serta R² tertinggi. Hal ini menandakan model ini mampu menangkap pola dan variansi data dengan sangat baik, menghasilkan prediksi yang lebih akurat dan konsisten. Proses tuning berhasil menemukan kombinasi hyperparameter yang optimal sehingga model tidak hanya lebih tepat tetapi juga lebih stabil dalam memprediksi data baru.
+Berdasarkan hasil tersebut, Gradient Boosting Regressor (Tuned) dipilih sebagai model terbaik. Model ini menunjukkan kinerja paling optimal dengan nilai MAE dan RMSE terendah serta koefisien determinasi (R²) tertinggi sebesar 0.9653. Hal ini menunjukkan bahwa model Gradient Boosting tidak hanya akurat, tetapi juga stabil dan mampu menangkap variasi data dengan sangat baik. Tuning hyperparameter yang dilakukan berhasil menemukan konfigurasi yang tepat, sehingga model dapat meminimalkan galat prediksi sekaligus menghindari overfitting.
 
-Sementara itu, meskipun XGBoost sebelum tuning tampil sangat kuat, setelah proses tuning performanya sedikit menurun dibandingkan hasil awal dan juga sedikit kalah dibanding Gradient Boosting yang sudah dituning. Penurunan ini bisa terjadi karena kombinasi hyperparameter yang dipilih oleh RandomizedSearchCV mungkin kurang ideal untuk dataset ini, sehingga model mengalami sedikit overfitting atau underfitting. Selain itu, XGBoost memiliki banyak hyperparameter kompleks yang perlu penyesuaian sangat tepat, dan jika tuning tidak optimal, performanya bisa sedikit menurun dibandingkan konfigurasi awal yang sederhana namun efektif.
+Model XGBoost Regressor (Tuned) juga menunjukkan performa yang sangat kompetitif dengan R² sebesar 0.9648, hanya sedikit di bawah Gradient Boosting. Nilai MAE dan RMSE juga sangat rendah, menandakan bahwa model ini tetap layak digunakan. Namun, dibandingkan dengan hasil sebelum tuning, performa XGBoost sedikit menurun. Penurunan ini kemungkinan besar disebabkan oleh kombinasi hyperparameter hasil tuning yang kurang optimal, mengingat kompleksitas konfigurasi model XGBoost yang lebih tinggi. Hal ini menunjukkan bahwa tuning yang tidak presisi justru dapat menurunkan kinerja model yang awalnya sudah baik.
+
+Sementara itu, Random Forest Regressor (Tuned) juga mengalami peningkatan signifikan dengan R² sebesar 0.9626, mendekati performa XGBoost. Penurunan MAE dan RMSE menunjukkan bahwa model menjadi lebih presisi dan generalisasi terhadap data uji menjadi lebih baik. Meskipun tidak sekuat Gradient Boosting dalam menangkap kompleksitas hubungan antar fitur, Random Forest tetap menjadi pilihan solid, terutama karena arsitekturnya yang lebih sederhana dan lebih mudah diinterpretasikan.
+
+Secara keseluruhan, ketiga model menunjukkan performa yang sangat baik setelah tuning. Namun, Gradient Boosting (Tuned) menjadi pilihan utama untuk implementasi sistem prediksi output daya CCPP karena akurasi, stabilitas, dan generalisasi prediksinya paling optimal berdasarkan ketiga metrik evaluasi.
 
 ## Evaluation
 
