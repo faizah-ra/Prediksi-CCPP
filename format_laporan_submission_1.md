@@ -37,7 +37,8 @@ Menjelaskan pernyataan masalah latar belakang:
 - Menerapkan analisis korelasi menggunakan heat map sebagai metode visualisasi untuk memastikan pemilihan fitur yang relevan dan mempermudah interpretasi hubungan antara variabel input lingkungan dengan output daya.
   
 ## Data Understanding
-Data yang digunakan dalam proyek ini merupakan dataset dari Combined Cycle Power Plant Data Set yang tersedia di UCI Machine Learning Repository. Dataset ini berisi pengukuran variabel lingkungan dan output daya listrik dari pembangkit listrik Combined Cycle Power Plant (CCPP) yang diambil dalam interval waktu tertentu. Dataset ini terdiri dari 9.568 entri data dengan 5 atribut numerik yang saling berkaitan.
+Data yang digunakan dalam proyek ini merupakan dataset dari Combined Cycle Power Plant Data Set yang tersedia di UCI Machine Learning Repository[UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Combined+Cycle+Power+Plant).
+. Dataset ini berisi pengukuran variabel lingkungan dan output daya listrik dari pembangkit listrik Combined Cycle Power Plant (CCPP) yang diambil dalam interval waktu tertentu. Dataset ini terdiri dari 9.568 entri data dengan 5 atribut numerik yang saling berkaitan.
 
 
 ### Variabel-variabel pada dataset Combined Cycle Power Plant adalah sebagai berikut:
@@ -244,9 +245,28 @@ Evaluasi model dilakukan dengan menggunakan metrik MAE, RMSE, dan R² Score pada
 Berdasarkan evaluasi awal, XGBoost Regressor dipilih sebagai model terbaik karena menunjukkan performa paling unggul dengan nilai MAE dan RMSE terendah serta nilai R² tertinggi (0.9623). Ini berarti XGBoost mampu memberikan prediksi yang lebih akurat dan menjelaskan variansi data dengan baik dibandingkan model Random Forest dan Gradient Boosting standar. Selain itu, XGBoost memiliki fitur regularisasi dan efisiensi komputasi yang memungkinkan pengembangan model lebih optimal melalui proses tuning hyperparameter.
 Untuk meningkatkan performa model lebih jauh, dilakukan tuning hyperparameter menggunakan metode RandomizedSearchCV pada kedua model Gradient Boosting dan XGBoost. Proses ini bertujuan menemukan kombinasi parameter terbaik yang meminimalkan kesalahan prediksi.
 
-- Gradient Boosting mendapatkan parameter terbaik seperti n_estimators=300, max_depth=7, dan learning_rate=0.1 dengan hasil evaluasi setelah tuning menunjukkan peningkatan: MAE turun menjadi 2.2051, RMSE menjadi 3.1923, dan R² naik ke 0.9653.
+- Gradient Boosting mendapatkan parameter terbaik  sebagai berikut:
+  - `n_estimators = 300`: jumlah estimator (pohon) dalam model.
+  - `learning_rate = 0.1`: laju pembelajaran untuk mengurangi kontribusi setiap pohon berturut-turut.
+  - `max_depth = 7`: kedalaman maksimum pohon.
+  - `subsample = 0.9`: proporsi data yang digunakan pada setiap iterasi boosting.
+  - `min_samples_split = 3`: jumlah minimum sampel untuk membagi node.
+  - `min_samples_leaf = 2`: jumlah minimum sampel yang diperlukan di setiap daun.
+    
+  Tuning parameter dilakukan untuk meminimalkan kesalahan prediksi sambil menghindari overfitting, menghasilkan model yang lebih stabil dan akurat.
 
-- XGBoost juga melakukan tuning dengan parameter seperti n_estimators=500, max_depth=7, learning_rate=0.05, dan regularisasi reg_alpha serta reg_lambda. Hasilnya MAE menjadi 2.2174, RMSE 3.2176, dan R² 0.9648, juga menunjukkan perbaikan signifikan dari model awal.
+- XGBoost juga melakukan tuning dengan parameter optimal berikut:
+  - `n_estimators = 500`: jumlah boosting rounds.
+  - `learning_rate = 0.05`: laju pembelajaran yang lebih konservatif.
+  - `max_depth = 7`: kedalaman maksimum setiap pohon.
+  - `subsample = 0.8`: fraksi data pelatihan yang digunakan untuk membangun setiap pohon.
+  - `colsample_bytree = 0.8`: proporsi fitur yang digunakan oleh setiap pohon.
+  - `gamma = 0`: nilai minimum untuk split loss reduction.
+  - `reg_alpha = 0.1`: regularisasi L1.
+  - `reg_lambda = 1`: regularisasi L2.
+
+  Seluruh parameter ini dipilih untuk mencapai keseimbangan antara kompleksitas model dan generalisasi prediksi.
+
   
 | Model                    | MAE      | RMSE     | R²       |
 |------------------------- | -------- | -------- | -------- |
