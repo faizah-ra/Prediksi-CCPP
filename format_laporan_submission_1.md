@@ -276,7 +276,7 @@ Berdasarkan hasil evaluasi awal sebelum tuning, XGBoost Regressor menunjukkan pe
 Namun, untuk meningkatkan performa semua model secara menyeluruh, dilakukan proses tuning hyperparameter menggunakan metode RandomizedSearchCV pada ketiga model, yaitu Random Forest, Gradient Boosting, dan XGBoost. Tujuan dari tuning ini adalah untuk menemukan kombinasi parameter optimal yang dapat meminimalkan kesalahan prediksi dan meningkatkan generalisasi model.
 
 - Random Forest Regressor
-  Model Random Forest Regressor juga mengalami peningkatan performa setelah dilakukan tuning menggunakan metode RandomizedSearchCV. Parameter terbaik yang diperoleh dari proses tuning adalah sebagai berikut:
+  Model Random Forest Regressor mengalami peningkatan performa setelah dilakukan tuning menggunakan metode RandomizedSearchCV. Parameter terbaik yang diperoleh dari proses tuning adalah sebagai berikut:
   
   - n_estimators = 500: jumlah pohon keputusan (decision trees) yang digunakan dalam ensemble. Semakin banyak pohon, semakin stabil hasil prediksi karena rata-rata dari banyak estimator cenderung mengurangi variansi.
   
