@@ -313,7 +313,8 @@ Namun, untuk meningkatkan performa semua model secara menyeluruh, dilakukan pros
 - XGBoost
 
   Model XGBoost Regressor juga mengalami peningkatan performa setelah dilakukan tuning menggunakan pendekatan RandomizedSearchCV. Adapun kombinasi parameter optimal yang ditemukan adalah sebagai berikut:
-n_estimators = 500, yaitu jumlah total pohon (estimators) yang digunakan dalam proses boosting. Jumlah ini memberikan kapasitas yang cukup bagi model untuk mempelajari pola kompleks dalam data tanpa kehilangan stabilitas.
+  
+  - n_estimators = 500, yaitu jumlah total pohon (estimators) yang digunakan dalam proses boosting. Jumlah ini memberikan kapasitas yang cukup bagi model untuk mempelajari pola kompleks dalam data tanpa kehilangan stabilitas.
 
   - learning_rate = 0.05, merupakan laju pembelajaran yang relatif kecil untuk memastikan proses pembelajaran berlangsung secara konservatif dan bertahap, sehingga mencegah konvergensi prematur dan meningkatkan generalisasi.
   
