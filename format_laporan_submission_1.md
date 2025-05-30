@@ -335,8 +335,8 @@ Namun, untuk meningkatkan performa semua model secara menyeluruh, dilakukan pros
 | Model                    | MAE      | RMSE     | R²       |
 |------------------------- | -------- | -------- | -------- |
 | Random Forest (Tuned)    | 2.2907   | 3.3162   | 0.9626   |
-| Gradient Boosting (Tuned)| 2.205147 | 3.192256 | 0.965326 |
-| XGBoost (Tuned)          | 2.217422 | 3.217562 | 0.964774 |
+| Gradient Boosting (Tuned)| 2.2051   | 3.1923   | 0.9653   |
+| XGBoost (Tuned)          | 2.2174   | 3.2176   | 0.9648   |
 
 Berdasarkan hasil tersebut, Gradient Boosting Regressor (Tuned) dipilih sebagai model terbaik. Model ini menunjukkan kinerja paling optimal dengan nilai MAE dan RMSE terendah serta koefisien determinasi (R²) tertinggi sebesar 0.9653. Hal ini menunjukkan bahwa model Gradient Boosting tidak hanya akurat, tetapi juga stabil dan mampu menangkap variasi data dengan sangat baik. Tuning hyperparameter yang dilakukan berhasil menemukan konfigurasi yang tepat, sehingga model dapat meminimalkan galat prediksi sekaligus menghindari overfitting.
 
@@ -438,7 +438,7 @@ Setelah proses pelatihan model selesai, tahap selanjutnya adalah melakukan evalu
    
 | Model                    | MAE      | RMSE     | R²       |
 |------------------------- | -------- | -------- | -------- |
-| Gradient Boosting (Tuned)| 2.205147 | 3.192256 | 0.965326 |
+| Gradient Boosting (Tuned)| 2.2051   | 3.1923   | 0.9653   |
 
 Model Gradient Boosting (Tuned) menunjukkan performa prediksi yang sangat baik dengan **R² sebesar 0.9653**, yang berarti model mampu menjelaskan sekitar **96.53%** variasi dalam data target. Nilai **MAE sebesar 2.2051** menunjukkan bahwa secara rata-rata prediksi model berbeda sekitar 2.21 poin dari nilai aktual. Sementara itu, **RMSE sebesar 3.1923** menunjukkan bahwa kesalahan prediksi model tetap rendah dan relatif stabil, meskipun masih ada beberapa titik data dengan deviasi yang lebih besar.
 
@@ -463,7 +463,7 @@ Secara keseluruhan, Gradient Boosting memberikan performa yang sangat baik dan m
    
 | Model                    | MAE      | RMSE     | R²       |
 |------------------------- | -------- | -------- | -------- |
-| XGBoost (Tuned)          | 2.217422 | 3.217562 | 0.964774 |
+| XGBoost (Tuned)          | 2.2174   | 3.2176   | 0.9648   |
 
 Model XGBoost yang telah dituning menunjukkan performa yang sangat baik dengan nilai **R² sebesar 0.9648**, artinya model mampu menjelaskan sekitar **96.48%** variasi dari data target. Nilai **MAE sebesar 2.2174** menunjukkan bahwa secara rata-rata, prediksi model meleset sekitar 2.22 poin dari nilai aktual. Sementara itu, **RMSE sebesar 3.2176** mengindikasikan bahwa prediksi model cukup stabil, meskipun tetap memperhatikan adanya kesalahan besar yang mungkin terjadi.
 
