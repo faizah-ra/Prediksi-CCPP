@@ -296,17 +296,17 @@ Namun, untuk meningkatkan performa semua model secara menyeluruh, dilakukan pros
   
   Setelah proses tuning hyperparameter menggunakan teknik RandomizedSearchCV, diperoleh konfigurasi terbaik untuk model Gradient Boosting Regressor yang secara signifikan meningkatkan akurasi prediksi. Parameter-parameter terbaik yang digunakan adalah sebagai berikut:
   
-- n_estimators = 300, yang berarti model terdiri dari 300 pohon keputusan yang dibangun secara bertahap. Jumlah ini cukup besar untuk memodelkan kompleksitas hubungan antar fitur tanpa menyebabkan overfitting.
-
-- learning_rate = 0.1, yaitu laju pembelajaran yang mengatur kontribusi masing-masing pohon dalam proses boosting. Nilai ini memberikan keseimbangan antara kecepatan pelatihan dan akurasi model.
-
-- max_depth = 7, menetapkan kedalaman maksimum tiap pohon. Parameter ini memungkinkan model mempelajari interaksi kompleks antar variabel sambil tetap menjaga generalisasi.
-
-- subsample = 1.0, artinya setiap pohon dilatih dengan menggunakan seluruh data pelatihan. Meskipun tidak menggunakan subset, kombinasi dengan parameter lain tetap menjaga stabilitas dan menghindari overfitting.
-
-- min_samples_split = 10, yaitu jumlah minimum sampel yang diperlukan untuk memisahkan sebuah node. Nilai ini membantu mencegah pemisahan yang terlalu dini pada data yang kurang signifikan.
-
-- min_samples_leaf = 4, yaitu jumlah minimum sampel yang harus ada di setiap daun pohon. Hal ini bertujuan untuk memastikan setiap daun berisi cukup data agar prediksi tetap stabil.
+  - n_estimators = 300, yang berarti model terdiri dari 300 pohon keputusan yang dibangun secara bertahap. Jumlah ini cukup besar untuk memodelkan kompleksitas hubungan antar fitur tanpa menyebabkan overfitting.
+  
+  - learning_rate = 0.1, yaitu laju pembelajaran yang mengatur kontribusi masing-masing pohon dalam proses boosting. Nilai ini memberikan keseimbangan antara kecepatan pelatihan dan akurasi model.
+  
+  - max_depth = 7, menetapkan kedalaman maksimum tiap pohon. Parameter ini memungkinkan model mempelajari interaksi kompleks antar variabel sambil tetap menjaga generalisasi.
+  
+  - subsample = 1.0, artinya setiap pohon dilatih dengan menggunakan seluruh data pelatihan. Meskipun tidak menggunakan subset, kombinasi dengan parameter lain tetap menjaga stabilitas dan menghindari overfitting.
+  
+  - min_samples_split = 10, yaitu jumlah minimum sampel yang diperlukan untuk memisahkan sebuah node. Nilai ini membantu mencegah pemisahan yang terlalu dini pada data yang kurang signifikan.
+  
+  - min_samples_leaf = 4, yaitu jumlah minimum sampel yang harus ada di setiap daun pohon. Hal ini bertujuan untuk memastikan setiap daun berisi cukup data agar prediksi tetap stabil.
   
   Kombinasi parameter tersebut menghasilkan model yang tidak hanya akurat, tetapi juga stabil dan dapat diandalkan untuk digunakan dalam prediksi output daya CCPP pada berbagai kondisi operasional.
 
@@ -315,19 +315,19 @@ Namun, untuk meningkatkan performa semua model secara menyeluruh, dilakukan pros
   Model XGBoost Regressor juga mengalami peningkatan performa setelah dilakukan tuning menggunakan pendekatan RandomizedSearchCV. Adapun kombinasi parameter optimal yang ditemukan adalah sebagai berikut:
 n_estimators = 500, yaitu jumlah total pohon (estimators) yang digunakan dalam proses boosting. Jumlah ini memberikan kapasitas yang cukup bagi model untuk mempelajari pola kompleks dalam data tanpa kehilangan stabilitas.
 
-- learning_rate = 0.05, merupakan laju pembelajaran yang relatif kecil untuk memastikan proses pembelajaran berlangsung secara konservatif dan bertahap, sehingga mencegah konvergensi prematur dan meningkatkan generalisasi.
-
-- max_depth = 7, menetapkan kedalaman maksimum untuk setiap pohon keputusan. Nilai ini cukup untuk menangkap hubungan non-linear antar fitur tanpa menyebabkan overfitting.
-
-- subsample = 1.0, artinya seluruh data pelatihan digunakan dalam setiap iterasi boosting. Meskipun tidak menggunakan subset data, kombinasi dengan parameter lain tetap menjaga generalisasi model.
-
-- colsample_bytree = 1.0, menunjukkan bahwa seluruh fitur digunakan dalam pembangunan setiap pohon. Hal ini memberikan model akses penuh terhadap semua informasi dalam data untuk menghasilkan split yang optimal.
-
-- gamma = 0, menyatakan tidak adanya penalti tambahan untuk pembelahan (split) yang tidak menghasilkan pengurangan loss yang signifikan. Nilai ini dipilih karena tidak terbukti meningkatkan performa selama tuning.
-
-- reg_alpha = 0.1, adalah parameter regularisasi L1 (Lasso) yang membantu menyederhanakan model dengan mendorong sparsity (bobot nol) pada fitur yang kurang penting.
-
-- reg_lambda = 1.5, adalah parameter regularisasi L2 (Ridge) yang memberikan penalti terhadap bobot besar untuk menghindari overfitting dan meningkatkan stabilitas prediksi.
+  - learning_rate = 0.05, merupakan laju pembelajaran yang relatif kecil untuk memastikan proses pembelajaran berlangsung secara konservatif dan bertahap, sehingga mencegah konvergensi prematur dan meningkatkan generalisasi.
+  
+  - max_depth = 7, menetapkan kedalaman maksimum untuk setiap pohon keputusan. Nilai ini cukup untuk menangkap hubungan non-linear antar fitur tanpa menyebabkan overfitting.
+  
+  - subsample = 1.0, artinya seluruh data pelatihan digunakan dalam setiap iterasi boosting. Meskipun tidak menggunakan subset data, kombinasi dengan parameter lain tetap menjaga generalisasi model.
+  
+  - colsample_bytree = 1.0, menunjukkan bahwa seluruh fitur digunakan dalam pembangunan setiap pohon. Hal ini memberikan model akses penuh terhadap semua informasi dalam data untuk menghasilkan split yang optimal.
+  
+  - gamma = 0, menyatakan tidak adanya penalti tambahan untuk pembelahan (split) yang tidak menghasilkan pengurangan loss yang signifikan. Nilai ini dipilih karena tidak terbukti meningkatkan performa selama tuning.
+  
+  - reg_alpha = 0.1, adalah parameter regularisasi L1 (Lasso) yang membantu menyederhanakan model dengan mendorong sparsity (bobot nol) pada fitur yang kurang penting.
+  
+  - reg_lambda = 1.5, adalah parameter regularisasi L2 (Ridge) yang memberikan penalti terhadap bobot besar untuk menghindari overfitting dan meningkatkan stabilitas prediksi.
   
   Kombinasi parameter tersebut memberikan keseimbangan yang optimal antara kompleksitas model, kemampuan generalisasi, dan efisiensi komputasi, menjadikan XGBoost sebagai salah satu kandidat kuat dalam pemodelan prediksi output daya listrik pada proyek ini.
   
